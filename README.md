@@ -1,0 +1,2 @@
+# UEC2_PROJECT
+Project for UEC2 MTM AGH
