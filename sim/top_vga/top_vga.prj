@@ -16,7 +16,6 @@ sv work ../../rtl/vga_pkg.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/top_vga.sv \
         ../../rtl/draw_mouse.sv \
-        ../../rtl/d_flop.sv \
         ../../rtl/image_rom.sv \
         ../../rtl/draw_rect_ctl.sv \
         ../../rtl/delay.sv \

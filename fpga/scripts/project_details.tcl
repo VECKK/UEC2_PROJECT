@@ -39,7 +39,6 @@ set sv_files {
     ../rtl/draw_rect.sv
     ../rtl/vga_if.sv
     ../rtl/draw_mouse.sv
-    ../rtl/d_flop.sv
     ../rtl/image_rom.sv
     ../rtl/draw_rect_ctl.sv
     ../rtl/delay.sv

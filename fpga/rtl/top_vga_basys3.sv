@@ -33,9 +33,8 @@ module top_vga_basys3 (
      * Local variables and signals
      */
 
-    wire clk100MHz;
     wire locked;
-    wire clk40MHz;
+    wire clk65MHz;
     wire pclk_mirror;
 
     (* KEEP = "TRUE" *)
@@ -60,8 +59,7 @@ module top_vga_basys3 (
      clk_wiz_0_clk_wiz inst
      (
      // Clock out ports  
-     .clk100MHz(clk100MHz),
-     .clk40MHz(clk40MHz),
+     .clk65MHz(clk65MHz),
      // Status and control signals               
      .locked(locked),
     // Clock in ports
@@ -70,7 +68,7 @@ module top_vga_basys3 (
 
     ODDR pclk_oddr (
         .Q(pclk_mirror),
-        .C(clk40MHz),
+        .C(clk65MHz),
         .CE(1'b1),
         .D1(1'b1),
         .D2(1'b0),
@@ -84,8 +82,7 @@ module top_vga_basys3 (
      */
 
     top_vga u_top_vga (
-        .clk40MHz(clk40MHz),
-        .clk100MHz(clk100MHz),
+        .clk65MHz(clk65MHz),
         .rst(btnC),
         .r(vgaRed),
         .g(vgaGreen),

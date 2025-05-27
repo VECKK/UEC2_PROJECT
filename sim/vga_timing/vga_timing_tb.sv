@@ -19,14 +19,14 @@ module vga_timing_tb;
      *  Local parameters
      */
 
-    localparam CLK_PERIOD = 25;     // 40 MHz
+    localparam CLK_PERIOD = 1000/65;     // 65 MHz
 
 
     /**
      * Local variables and signals
      */
 
-    logic clk40MHz;
+    logic clk65MHz;
     logic rst;
 
     tbg_if timing_if();
@@ -36,8 +36,8 @@ module vga_timing_tb;
      */
 
     initial begin
-        clk40MHz = 1'b0;
-        forever #(CLK_PERIOD/2) clk40MHz = ~clk40MHz;
+        clk65MHz = 1'b0;
+        forever #(CLK_PERIOD/2) clk65MHz = ~clk65MHz;
     end
 
 
@@ -58,7 +58,7 @@ module vga_timing_tb;
      */
 
     vga_timing dut(
-        .clk40MHz(clk40MHz),
+        .clk65MHz(clk65MHz),
         .rst,
         .tout(timing_if)
     );
@@ -84,7 +84,7 @@ module vga_timing_tb;
      */
 
     property hcount_in_range;
-        @(posedge clk40MHz)
+        @(posedge clk65MHz)
         disable iff (rst)
         ##1 (timing_if.hcount >= 0) && (timing_if.hcount < HOR_TOTAL_TIME);
     endproperty
@@ -93,7 +93,7 @@ module vga_timing_tb;
         else $error("hcount out of range! hcount = %0d",timing_if.hcount);
 
     property vcount_in_range;
-        @(posedge clk40MHz)
+        @(posedge clk65MHz)
         disable iff (rst)
         ##1 (timing_if.vcount >= 0) && (timing_if.vcount < VER_TOTAL_TIME);
     endproperty

@@ -29,14 +29,14 @@ module top_vga_tb;
      *  Local parameters
      */
 
-    localparam CLK_PERIOD = 25;     // 40 MHz
+    localparam CLK_PERIOD = 1000/65;     // 65 MHz
 
 
     /**
      * Local variables and signals
      */
 
-    logic clk40MHz, clk100MHz, rst;
+    logic clk65MHz, rst;
     wire vs, hs;
     wire [3:0] r, g, b;
 
@@ -46,13 +46,8 @@ module top_vga_tb;
      */
 
     initial begin
-        clk40MHz = 1'b0;
-        forever #(CLK_PERIOD/2) clk40MHz = ~clk40MHz;
-    end
-
-    initial begin
-        clk100MHz = 1'b0;
-        forever #(CLK_PERIOD/2) clk100MHz = ~clk100MHz;
+        clk65MHz = 1'b0;
+        forever #(CLK_PERIOD/2) clk65MHz = ~clk65MHz;
     end
 
 
@@ -61,8 +56,7 @@ module top_vga_tb;
      */
 
     top_vga dut (
-        .clk40MHz(clk40MHz),
-        .clk100MHz(clk100MHz),
+        .clk65MHz(clk65MHz),
         .rst(rst),
         .vs(vs),
         .hs(hs),
@@ -78,7 +72,7 @@ module top_vga_tb;
         .YDIM(16'd628),
         .FILE_DIR("../../results")
     ) u_tiff_writer (
-        .clk(clk40MHz),
+        .clk(clk65MHz),
         .r({r,r}), // fabricate an 8-bit value
         .g({g,g}), // fabricate an 8-bit value
         .b({b,b}), // fabricate an 8-bit value

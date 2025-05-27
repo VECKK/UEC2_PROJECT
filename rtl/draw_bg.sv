@@ -8,7 +8,7 @@
  */
 
 module draw_bg (
-        input  logic clk40MHz,
+        input  logic clk65MHz,
         input  logic rst,
 
         tbg_if.bgin bgin,
@@ -34,7 +34,7 @@ module draw_bg (
      * Internal logic
      */
 
-    always_ff @(posedge clk40MHz) begin : bg_ff_blk
+    always_ff @(posedge clk65MHz) begin : bg_ff_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync  <= '0;

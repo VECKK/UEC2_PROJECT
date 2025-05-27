@@ -8,7 +8,7 @@
  */
 
 module vga_timing (
-        input  logic clk40MHz,
+        input  logic clk65MHz,
         input  logic rst,
 
         tbg_if.tout tout
@@ -22,7 +22,7 @@ module vga_timing (
     logic [10:0] vcount_nxt, hcount_nxt;
     logic vsync_nxt, vblnk_nxt, hsync_nxt, hblnk_nxt;
 
-    always_ff @(posedge clk40MHz or posedge rst) begin
+    always_ff @(posedge clk65MHz or posedge rst) begin
         if (rst) begin
             tout.vcount <= 0;
             tout.hcount <= 0;

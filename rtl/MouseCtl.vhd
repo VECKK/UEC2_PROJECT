@@ -180,7 +180,7 @@ use UNISIM.VComponents.all;
 	entity MouseCtl is
 	generic
 	(
-	   SYSCLK_FREQUENCY_HZ : integer := 100000000;
+	   SYSCLK_FREQUENCY_HZ : integer := 65_000_000;
 	   CHECK_PERIOD_MS     : integer := 500;
 	   TIMEOUT_PERIOD_MS   : integer := 100
 	);

@@ -1,5 +1,5 @@
 module draw_mouse (
-        input  logic clk40MHz,
+        input  logic clk65MHz,
         input  logic rst,
         input  logic [11:0] xpos,
         input  logic [11:0] ypos,
@@ -17,7 +17,7 @@ module draw_mouse (
      */
 
     MouseDisplay u_mouse_display (
-        .pixel_clk(clk40MHz),
+        .pixel_clk(clk65MHz),
         .xpos(xpos),
         .ypos(ypos),
         .vcount(in.vcount),
@@ -28,7 +28,7 @@ module draw_mouse (
         .enable_mouse_display_out()
     );
 
-    always_ff @(posedge clk40MHz) begin : draw_mouse_ff_blk
+    always_ff @(posedge clk65MHz) begin : draw_mouse_ff_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync  <= '0;

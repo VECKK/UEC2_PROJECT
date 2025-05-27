@@ -13,8 +13,7 @@
  */
 
 module top_vga (
-        input  logic clk40MHz,
-        input  logic clk100MHz,
+        input  logic clk65MHz,
         input  logic rst,
         output logic vs,
         output logic hs,
@@ -31,12 +30,9 @@ module top_vga (
 
     logic [11:0] xpos;
     logic [11:0] ypos;
-    logic [11:0] xpos_d;
-    logic [11:0] ypos_d;
     logic [11:0] rgb_pixel;
     logic [11:0] pixel_addr;
     logic left;
-    logic left_q;
     logic clk_delay;
     logic [11:0] xpos_ctl;
     logic [11:0] ypos_ctl;
@@ -67,13 +63,13 @@ module top_vga (
      */
 
     vga_timing u_vga_timing (
-        .clk40MHz(clk40MHz),
+        .clk65MHz(clk65MHz),
         .rst,
         .tout(timing_if)
     );
 
     draw_bg u_draw_bg (
-        .clk40MHz(clk40MHz),
+        .clk65MHz(clk65MHz),
         .rst,
 
         .bgin(timing_if),
@@ -82,7 +78,7 @@ module top_vga (
     );
 
     draw_rect u_draw_rect (
-        .clk40MHz(clk40MHz),
+        .clk65MHz(clk65MHz),
         .rst,
 
         .in (draw_char_if),
@@ -97,7 +93,7 @@ module top_vga (
     );
 
     draw_rect_char u_draw_rect_char (
-        .clk(clk40MHz),
+        .clk(clk65MHz),
         .rst,
         .in(draw_bg_if),
         .out(draw_char_if),
@@ -108,7 +104,7 @@ module top_vga (
     );
     
     char_rom u_char_rom (
-        .clk(clk40MHz),
+        .clk(clk65MHz),
         .rst,
         .char_xy(char_xy),
         .char_code(char_code)
@@ -119,14 +115,14 @@ module top_vga (
     end
 
     font_rom u_font_rom (
-        .clk(clk40MHz),
+        .clk(clk65MHz),
         .char_line_pixels(char_line_pixels),
         .addr(address)
     );
 
 
     image_rom u_image_rom (
-        .clk(clk40MHz),
+        .clk(clk65MHz),
 
         .rgb(rgb_pixel),
         .address(pixel_addr)
@@ -134,7 +130,7 @@ module top_vga (
     );
 
     draw_mouse u_draw_mouse (
-        .clk40MHz(clk40MHz),
+        .clk65MHz(clk65MHz),
         .rst,
 
         .in(draw_rect_if),
@@ -145,24 +141,13 @@ module top_vga (
 
     );
 
-    d_flop u_d_flop (
-        .clk(clk40MHz),
-        .rst,
-        .xpos_d(xpos_d),
-        .ypos_d(ypos_d),
-        .left_d(left),
-        .xpos_q(xpos),
-        .ypos_q(ypos),
-        .left_q
-    );
-
     MouseCtl u_mousectl (
-        .clk(clk100MHz),
+        .clk(clk65MHz),
         .rst,
         .ps2_clk(ps2_clk),
         .ps2_data(ps2_data),
-        .xpos(xpos_d),
-        .ypos(ypos_d),
+        .xpos(xpos),
+        .ypos(ypos),
 
         .zpos(),
         .left(left),
@@ -179,7 +164,7 @@ module top_vga (
     draw_rect_ctl u_draw_rect_ctl (
         .clk(clk_delay),
         .rst,
-        .mouse_left(left_q),
+        .mouse_left(left),
         .mouse_xpos(xpos),
         .mouse_ypos(ypos),
         .xpos(xpos_ctl),
@@ -187,7 +172,7 @@ module top_vga (
     );
 
     delay u_delay (
-        .clk(clk40MHz),
+        .clk(clk65MHz),
         .rst,
         .clk_delay(clk_delay)
     );

@@ -1,5 +1,5 @@
 module draw_rect (
-        input  logic clk40MHz,
+        input  logic clk65MHz,
         input  logic rst,
         input  logic [11:0] xpos,
         input  logic [11:0] ypos,
@@ -45,7 +45,7 @@ module draw_rect (
      * Internal logic
      */
 
-    always_ff @(posedge clk40MHz) begin : one_ff_blk
+    always_ff @(posedge clk65MHz) begin : one_ff_blk
         if (rst) begin
             one_vcount <= '0;
             one_vsync  <= '0;
@@ -65,7 +65,7 @@ module draw_rect (
         end
     end
 
-    always_ff @(posedge clk40MHz) begin : two_ff_blk
+    always_ff @(posedge clk65MHz) begin : two_ff_blk
         if (rst) begin
             two_vcount <= '0;
             two_vsync  <= '0;
@@ -85,7 +85,7 @@ module draw_rect (
         end
     end
 
-    always_ff @(posedge clk40MHz) begin : rect_ff_blk
+    always_ff @(posedge clk65MHz) begin : rect_ff_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync  <= '0;
