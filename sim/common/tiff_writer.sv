@@ -15,8 +15,8 @@
  */
 
 module tiff_writer #(
-        parameter XDIM = 16'd1056,
-        parameter YDIM = 16'd628,
+        parameter XDIM = 16'd1024,
+        parameter YDIM = 16'd768,
         parameter FILE_DIR = "../../results"
     ) (
         input logic       clk,

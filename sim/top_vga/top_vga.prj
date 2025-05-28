@@ -11,12 +11,15 @@
 
 sv work ../../rtl/vga_pkg.sv \
         ../../rtl/vga_timing.sv \
-        ../../rtl/draw_bg.sv \
-        ../../rtl/draw_rect.sv \
+        ../../rtl/Background/draw_bg.sv \
+        ../../rtl/Background/image_bg.sv \
+        ../../rtl/Spaceship/draw_spaceship.sv \
+        ../../rtl/Spaceship/image_ship.sv \
+        ../../rtl/Bullet/draw_bullet.sv \
+        ../../rtl/Bullet/image_bullet.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/top_vga.sv \
-        ../../rtl/draw_mouse.sv \
-        ../../rtl/image_rom.sv \
+        ../../rtl/Mouse/draw_mouse.sv \
         ../../rtl/draw_rect_ctl.sv \
         ../../rtl/delay.sv \
         ../../rtl/draw_rect_char.sv \
@@ -26,9 +29,9 @@ sv work ../../rtl/vga_pkg.sv \
         ../common/tiff_writer.sv \
         top_vga_tb.sv
 
-vhdl work ../../rtl/MouseCtl.vhd \
-          ../../rtl/Ps2Interface.vhd \
-          ../../rtl/MouseDisplay.vhd \
+vhdl work ../../rtl/Mouse/MouseCtl.vhd \
+          ../../rtl/Mouse/Ps2Interface.vhd \
+          ../../rtl/Mouse/MouseDisplay.vhd \
 
 verilog work ../../fpga/rtl/clk_wiz_0_clk_wiz.v \
              ../../fpga/rtl/clk_wiz_0.v \

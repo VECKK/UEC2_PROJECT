@@ -3,18 +3,27 @@ module draw_mouse (
         input  logic rst,
         input  logic [11:0] xpos,
         input  logic [11:0] ypos,
+        input  logic left_mouse,
+        output logic show_cursor,
 
         vga_if.in in,
-
         vga_if.out out
     );
 
     timeunit 1ns;
     timeprecision 1ps;
 
-    /**
-     * Internal logic
-     */
+    logic cursor_visible = 1'b1; // domyślnie kursor widoczny
+
+      // Logika wyłączania kursora po pierwszym kliknięciu
+    always_ff @(posedge clk65MHz) begin
+        if (rst)
+            cursor_visible <= 1'b1; // reset: kursor widoczny
+        else if (left_mouse)
+            cursor_visible <= 1'b0; // po kliknięciu: kursor znika na zawsze
+    end
+
+    assign show_cursor = cursor_visible;
 
     MouseDisplay u_mouse_display (
         .pixel_clk(clk65MHz),
@@ -25,7 +34,8 @@ module draw_mouse (
         .blank(in.hblnk | in.vblnk),
         .rgb_in(in.rgb),
         .rgb_out(out.rgb),
-        .enable_mouse_display_out()
+        .enable_mouse_display_out(),
+        .show_cursor(show_cursor)
     );
 
     always_ff @(posedge clk65MHz) begin : draw_mouse_ff_blk

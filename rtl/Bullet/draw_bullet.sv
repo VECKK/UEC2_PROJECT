@@ -1,44 +1,31 @@
-module draw_rect (
+module draw_bullet (
         input  logic clk65MHz,
         input  logic rst,
         input  logic [11:0] xpos,
         input  logic [11:0] ypos,
-        input  logic [11:0] rgb_pixel,
-        output logic [11:0] pixel_addr,
+        //input logic left_mouse,
+        input  logic [11:0] rgb_bullet,
+        output logic [7:0] bullet_addr,
 
         vga_if.in in,
-
         vga_if.out out
     );
 
     timeunit 1ns;
     timeprecision 1ps;
 
-    import vga_pkg::*;
-
-    localparam WIDTH = 48;
-    localparam HEIGHT = 64;
-    //localparam RGB_RECT = 12'hF00;
-
-    /**
-     * Local variables and signals
-     */
+    localparam BULLET_W = 6;
+    localparam BULLET_H = 40;
 
     logic [11:0] rgb_nxt;
     logic [10:0] one_vcount;
     logic [10:0] one_hcount;
     logic [11:0] one_rgb;
-    logic        one_vsync;
-    logic        one_vblnk;
-    logic        one_hsync;
-    logic        one_hblnk;
+    logic        one_vsync, one_vblnk, one_hsync, one_hblnk;
     logic [10:0] two_vcount;
     logic [10:0] two_hcount;
     logic [11:0] two_rgb;
-    logic        two_vsync;
-    logic        two_vblnk;
-    logic        two_hsync;
-    logic        two_hblnk;
+    logic        two_vsync, two_vblnk, two_hsync, two_hblnk;
 
 
     /**
@@ -85,7 +72,7 @@ module draw_rect (
         end
     end
 
-    always_ff @(posedge clk65MHz) begin : rect_ff_blk
+    always_ff @(posedge clk65MHz) begin : spaceship_ff_blk
         if (rst) begin
             out.vcount <= '0;
             out.vsync  <= '0;
@@ -94,7 +81,6 @@ module draw_rect (
             out.hsync  <= '0;
             out.hblnk  <= '0;
             out.rgb    <= '0;
-            pixel_addr <= '0;
         end else begin
             out.vcount <= two_vcount;
             out.vsync  <= two_vsync;
@@ -103,16 +89,26 @@ module draw_rect (
             out.hsync  <= two_hsync;
             out.hblnk  <= two_hblnk;
             out.rgb    <= rgb_nxt;
-            pixel_addr <= {6'(in.vcount - ypos), 6'(in.hcount - xpos)};
         end
     end
 
-    always_comb begin : rect_comb_blk
+    always_comb begin : spaceship_comb_blk
         rgb_nxt = two_rgb;
 
-        if (two_hcount >= xpos && two_hcount < xpos + WIDTH &&
-            two_vcount >= ypos && two_vcount < ypos + HEIGHT) begin
-            rgb_nxt = rgb_pixel;
+        if (two_hcount >= xpos && two_hcount < xpos + BULLET_W &&
+            two_vcount >= ypos && two_vcount < ypos + BULLET_H) begin
+            rgb_nxt = rgb_bullet;
+        end
+    end
+
+    always_comb begin
+        if (
+            two_hcount >= xpos && two_hcount < xpos + BULLET_W &&
+            two_vcount >= ypos && two_vcount < ypos + BULLET_H
+        ) begin
+            bullet_addr = ((two_vcount - ypos) * BULLET_W) + (two_hcount - xpos);
+        end else begin
+            bullet_addr = 0;
         end
     end
 

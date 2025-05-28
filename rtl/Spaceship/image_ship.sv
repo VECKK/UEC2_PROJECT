@@ -13,9 +13,9 @@
  * red, green and blue color values (4-bit each)
  */
 
-module image_rom (
+module image_ship (
         input  logic clk ,
-        input  logic [11:0] address,  // address = {addry[5:0], addrx[5:0]}
+        input  logic [12:0] address, 
         output logic [11:0] rgb
     );
 
@@ -24,7 +24,7 @@ module image_rom (
      * Local variables and signals
      */
 
-    reg [11:0] rom [0:4095];
+    reg [11:0] rom [0:5615];// 78*72= 5616
 
 
     /**
@@ -32,7 +32,7 @@ module image_rom (
      */
 
     /* Relative path from the simulation or synthesis working directory */
-    initial $readmemh("../../rtl/rect/image_rom.data", rom);
+    initial $readmemh("../../rtl/Spaceship/spaceship.data", rom);
 
 
     /**

@@ -34,12 +34,15 @@ set xdc_files {
 set sv_files {
     ../rtl/vga_pkg.sv
     ../rtl/vga_timing.sv
-    ../rtl/draw_bg.sv
+    ../rtl/Background/draw_bg.sv
+    ../rtl/Background/image_bg.sv
     ../rtl/top_vga.sv
-    ../rtl/draw_rect.sv
+    ../rtl/Spaceship/draw_spaceship.sv
+    ../rtl/Spaceship/image_ship.sv
+    ../rtl/Bullet/draw_bullet.sv
+    ../rtl/Bullet/image_bullet.sv
     ../rtl/vga_if.sv
-    ../rtl/draw_mouse.sv
-    ../rtl/image_rom.sv
+    ../rtl/Mouse/draw_mouse.sv
     ../rtl/draw_rect_ctl.sv
     ../rtl/delay.sv
     ../rtl/draw_rect_char.sv
@@ -57,12 +60,14 @@ set verilog_files {
 
 # Specify VHDL design files location            -- EDIT
 set vhdl_files {
-    ../rtl/MouseCtl.vhd
-    ../rtl/Ps2Interface.vhd
-    ../rtl/MouseDisplay.vhd
+    ../rtl/Mouse/MouseCtl.vhd
+    ../rtl/Mouse/Ps2Interface.vhd
+    ../rtl/Mouse/MouseDisplay.vhd
 }
 
 # Specify files for a memory initialization     -- EDIT
 set mem_files {
-    ../rtl/rect/image_rom.data
+    ../rtl/Spaceship/spaceship.data
+    ../rtl/Background/background.data
+    ../rtl/Bullet/bullet.data
 }

@@ -104,7 +104,9 @@ port (
 
    enable_mouse_display_out : out std_logic;
 
-   rgb_out  : out std_logic_vector(11 downto 0)
+   rgb_out  : out std_logic_vector(11 downto 0);
+
+   show_cursor : in std_logic -- if mouse cursor should be displayed
 );
 
 -- force synthesizer to extract distributed ram for the
@@ -194,9 +196,10 @@ begin
    end process;
 
    -- set enable_mouse_display high if vga counters inside cursor block
-   enable_mouse: process(hcount, vcount, xpos, ypos, mousepixel)
+   enable_mouse: process(hcount, vcount, xpos, ypos, mousepixel, show_cursor)
    begin
-      if(hcount >= xpos and hcount < (xpos + OFFSET) and
+      if(show_cursor = '1' and
+         hcount >= xpos and hcount < (xpos + OFFSET) and
          vcount >= ypos and vcount < (ypos + OFFSET)) and
          (mousepixel = "00" or mousepixel = "01")
       then

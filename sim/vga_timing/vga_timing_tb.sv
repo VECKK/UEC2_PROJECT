@@ -19,7 +19,7 @@ module vga_timing_tb;
      *  Local parameters
      */
 
-    localparam CLK_PERIOD = 1000/65;     // 65 MHz
+    localparam real CLK_PERIOD = 15.3846;     // 65 MHz
 
 
     /**

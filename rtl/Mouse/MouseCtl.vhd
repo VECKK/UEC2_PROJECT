@@ -194,7 +194,8 @@ use UNISIM.VComponents.all;
 	   middle      : out std_logic;
 	   right       : out std_logic;
 	   new_event   : out std_logic;
-	   value       : in std_logic_vector(11 downto 0);
+	   value_x     : in std_logic_vector(11 downto 0);
+      value_y     : in std_logic_vector(11 downto 0);
 	   setx        : in std_logic;
 	   sety        : in std_logic;
 	   setmax_x    : in std_logic;
@@ -252,11 +253,11 @@ constant SAMPLE_RATE      : std_logic_vector(7 downto 0) := x"28";
                                                   -- (40 samples/s)
 
 -- default maximum value for the horizontal mouse position
-constant DEFAULT_MAX_X : std_logic_vector(11 downto 0) := x"4FF";
-                                                      -- 1279
--- default maximum value for the vertical mouse position
-constant DEFAULT_MAX_Y : std_logic_vector(11 downto 0) := x"3FF";
+constant DEFAULT_MAX_X : std_logic_vector(11 downto 0) := x"3FF";
                                                       -- 1023
+-- default maximum value for the vertical mouse position
+constant DEFAULT_MAX_Y : std_logic_vector(11 downto 0) := x"2FF";
+                                                      -- 767
 
 -- Mouse check tick constants
 constant CHECK_PERIOD_CLOCKS   : integer := ((CHECK_PERIOD_MS*1000000)/(1000000000/SYSCLK_FREQUENCY_HZ));
@@ -439,7 +440,7 @@ timeout  <= '1' when timeout_cnt = (TIMEOUT_PERIOD_CLOCKS - 1) else '0';
       if(rising_edge(clk)) then
          -- if setx active, set new x_pos value
          if(setx = '1') then
-            x_pos <= value;
+            x_pos <= value_x;
          -- if delta movement received from mouse
          elsif(x_new = '1') then
             -- if negative movement on x axis
@@ -502,7 +503,7 @@ timeout  <= '1' when timeout_cnt = (TIMEOUT_PERIOD_CLOCKS - 1) else '0';
       if(rising_edge(clk)) then
          -- if sety active, set new y_pos value
          if(sety = '1') then
-            y_pos <= value;
+            y_pos <= value_y;
          -- if delta movement received from mouse
          elsif(y_new = '1') then
             -- if negative movement on y axis
@@ -563,7 +564,7 @@ timeout  <= '1' when timeout_cnt = (TIMEOUT_PERIOD_CLOCKS - 1) else '0';
          if(rst = '1') then
             x_max <= DEFAULT_MAX_X;
          elsif(setmax_x = '1') then
-            x_max <= value;
+            x_max <= value_x;
          end if;
       end if;
    end process set_max_x;
@@ -576,7 +577,7 @@ timeout  <= '1' when timeout_cnt = (TIMEOUT_PERIOD_CLOCKS - 1) else '0';
          if(rst = '1') then
             y_max <= DEFAULT_MAX_Y;
          elsif(setmax_y = '1') then
-            y_max <= value;
+            y_max <= value_y;
          end if;
       end if;
    end process set_max_y;
