@@ -1,8 +1,6 @@
 module draw_bullet (
         input  logic clk65MHz,
         input  logic rst,
-        input  logic [11:0] xpos,
-        input  logic [11:0] ypos,
         input  logic [11:0] rgb_bullet,
         input  logic [11:0] spaceship_x,
         input  logic [11:0] spaceship_y,

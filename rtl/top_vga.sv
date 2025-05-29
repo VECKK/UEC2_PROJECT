@@ -24,9 +24,8 @@ module top_vga (
     logic left;
     logic [11:0] spaceship_x;
     logic [11:0] spaceship_y;
+
     logic clk_delay;
-    // logic [11:0] xpos_ctl;
-    // logic [11:0] ypos_ctl;
     logic [7:0] char_line_pixels;
     logic [10:0] address;
     logic [7:0] char_xy;
@@ -43,6 +42,8 @@ module top_vga (
     //bullet
     logic [11:0] rgb_bullet;
     logic [7:0] bullet_addr;
+    logic [11:0] bullet_x;
+    logic [11:0] bullet_y;
 
 
     tbg_if timing_if();
@@ -123,11 +124,8 @@ module top_vga (
         .in (draw_char_if),
         .out(draw_bullet_if),
 
-        .xpos(xpos),
-        .ypos(ypos),
-        .spaceship_x(spaceship_x),
-        .spaceship_y(spaceship_y),
-        //.left_mouse(left),
+        .spaceship_x(bullet_x),
+        .spaceship_y(bullet_y),
 
         .rgb_bullet,
         .bullet_addr
@@ -140,6 +138,16 @@ module top_vga (
         .rgb(rgb_bullet),
         .address(bullet_addr)
 
+    );
+
+    shoot u_shoot (
+        .clk(clk65MHz),
+        .rst,
+        .fire(left),
+        .xpos(spaceship_x),
+        .ypos(spaceship_y),
+        .bullet_x,
+        .bullet_y
     );
 
 //----------MOUSE----------------

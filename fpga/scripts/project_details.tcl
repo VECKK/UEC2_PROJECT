@@ -41,6 +41,7 @@ set sv_files {
     ../rtl/Spaceship/image_ship.sv
     ../rtl/Bullet/draw_bullet.sv
     ../rtl/Bullet/image_bullet.sv
+    ../rtl/Bullet/shoot.sv
     ../rtl/vga_if.sv
     ../rtl/Mouse/draw_mouse.sv
     ../rtl/draw_rect_ctl.sv
