@@ -22,6 +22,8 @@ module top_vga (
     logic [11:0] rgb_pixel;
     logic [12:0] pixel_addr;
     logic left;
+    logic [11:0] spaceship_x;
+    logic [11:0] spaceship_y;
     logic clk_delay;
     // logic [11:0] xpos_ctl;
     // logic [11:0] ypos_ctl;
@@ -96,6 +98,8 @@ module top_vga (
 
         .xpos(xpos),
         .ypos(ypos),
+        .spaceship_x(spaceship_x),
+        .spaceship_y(spaceship_y),
         .left_mouse(left),
 
         .rgb_pixel,
@@ -121,6 +125,8 @@ module top_vga (
 
         .xpos(xpos),
         .ypos(ypos),
+        .spaceship_x(spaceship_x),
+        .spaceship_y(spaceship_y),
         //.left_mouse(left),
 
         .rgb_bullet,

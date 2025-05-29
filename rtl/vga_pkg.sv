@@ -17,7 +17,7 @@ package vga_pkg;
     localparam HEIGHT = 72;
 
     // Pozycja startowa na dole ekranu
-    localparam [11:0] START_X = (HOR_PIXELS - WIDTH) / 2;
+    localparam [11:0] START_X = (HOR_PIXELS / 2) - (WIDTH / 2);
     localparam [11:0] START_Y = VER_PIXELS - HEIGHT - 20;
 
 endpackage
