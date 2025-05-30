@@ -25,6 +25,21 @@ module shoot #(
 
     logic [11:0] xpos_nxt, ypos_nxt, xpos_fixed;
 
+    // Add this counter for bullet update timing
+    logic [16:0] bullet_tick; // Enough bits for 0..84635
+    logic update_bullet;
+
+    always_ff @(posedge clk) begin
+        if (rst || state != UP)
+            bullet_tick <= 0;
+        else if (bullet_tick == 84634)
+            bullet_tick <= 0;
+        else
+            bullet_tick <= bullet_tick + 1;
+    end
+
+    assign update_bullet = (bullet_tick == 0);
+
     always_ff @(posedge clk) begin
         if (rst) begin
             state      <= IDLE;
@@ -34,19 +49,27 @@ module shoot #(
         end else begin
             state    <= next_state;
             bullet_x <= xpos_nxt;
-            bullet_y <= ypos_nxt;
-            if (state == IDLE && fire && active_shoot) begin
-                xpos_fixed <= xpos; // Zapamiętaj pozycję pocisku przy strzale
-            end else if (state == UP) begin
-                xpos_fixed <= xpos_fixed; // Utrzymuj stałą pozycję x pocisku
-            end
+            // Only update bullet_y when update_bullet is high or not in UP state
+            if (update_bullet || state != UP)
+                bullet_y <= ypos_nxt;
+            xpos_fixed <= (state == IDLE && fire && active_shoot) ? xpos : xpos_fixed;
         end
+    end
+
+    logic armed;
+
+    always_ff @(posedge clk) begin
+        if (rst)
+            armed <= 1'b0;
+        else if (active_shoot && !armed)
+            armed <= 1'b1;
     end
 
     // Stan maszyny
     always_comb begin
         case (state)
-            IDLE:    next_state = (fire && active_shoot && (ypos >= 20)) ? UP : IDLE;
+            // Only allow shooting if 'armed' is already set (i.e., after first click)
+            IDLE:    next_state = (fire && active_shoot && armed && (ypos >= 36)) ? UP : IDLE;
             UP:      next_state = (bullet_y <= SPEED) ? IDLE : UP;
             default: next_state = IDLE;
         endcase
@@ -62,7 +85,10 @@ module shoot #(
 
             UP: begin
                 xpos_nxt = xpos_fixed;
-                ypos_nxt = bullet_y - SPEED;
+                if (update_bullet)
+                    ypos_nxt = bullet_y - SPEED;
+                else
+                    ypos_nxt = bullet_y;
             end
 
             default: begin
