@@ -8,6 +8,7 @@ module draw_spaceship (
     output logic [12:0] pixel_addr,
     output logic [11:0] spaceship_x,
     output logic [11:0] spaceship_y,
+    output logic active_schoot,
 
     vga_if.in in,
     vga_if.out out
@@ -47,6 +48,7 @@ always_comb begin
     if (spaceship_follow_mouse) begin
         spaceship_x = xpos - (WIDTH / 2);
         spaceship_y = ypos - (HEIGHT / 2);
+        active_schoot = 1'b1;
 
         if (xpos > 1023 - (WIDTH / 2))
             spaceship_x = 1023 - WIDTH;
@@ -64,6 +66,7 @@ always_comb begin
     end else begin
         spaceship_x = START_X;
         spaceship_y = START_Y;
+        active_schoot = 1'b0;
     end
 end
 
