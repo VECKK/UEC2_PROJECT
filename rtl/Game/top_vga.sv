@@ -25,13 +25,6 @@ module top_vga (
     logic [11:0] spaceship_x;
     logic [11:0] spaceship_y;
     logic active_schoot;
-
-    logic clk_delay;
-    logic [7:0] char_line_pixels;
-    logic [10:0] address;
-    logic [7:0] char_xy;
-    logic [6:0] char_code;
-    logic [3:0] char_line;
     //background
     logic [11:0] rom_rgb;
     logic [13:0] rom_addr;
@@ -45,14 +38,24 @@ module top_vga (
     logic [7:0] bullet_addr;
     logic [11:0] bullet_x;
     logic [11:0] bullet_y;
+    //meteorite
+    logic [11:0] rgb_meteor;
+    logic [14:0] meteor_addr;
+    logic [11:0] start_x;
+    logic [11:0] start_y;
+    logic [11:0] meteor_x;
+    logic [11:0] meteor_y;
+    logic toggle;
+    logic start_meteor;
 
 
     tbg_if timing_if();
     vga_if draw_bg_if();
     vga_if draw_spaceship_if();
     vga_if draw_mouse_if();
-    vga_if draw_char_if();
+    vga_if draw_string_if();
     vga_if draw_bullet_if();
+    vga_if draw_meteor_if();
 
 
     /**
@@ -89,6 +92,18 @@ module top_vga (
         .rgb(rom_rgb)
     );
 
+//---------START GAME----------------
+    draw_string u_draw_string (
+        .clk(clk65MHz),
+        .rst,
+
+        .enable(!first_click_done),
+        .in(draw_bg_if),
+        .out(draw_string_if)
+
+    );
+
+
 //----------SPACESHIP-----------------
 
     draw_spaceship u_draw_spaceship (
@@ -123,7 +138,7 @@ module top_vga (
         .clk65MHz(clk65MHz),
         .rst,
 
-        .in (draw_char_if),
+        .in (draw_string_if),
         .out(draw_bullet_if),
 
         .spaceship_x(bullet_x),
@@ -153,12 +168,53 @@ module top_vga (
         .bullet_y
     );
 
+//---------METEORITE-------------
+    draw_meteor u_draw_meteor (
+        .clk65MHz(clk65MHz),
+        .rst,
+
+        .in(draw_spaceship_if),
+        .out(draw_meteor_if),
+
+        .active_schoot(active_schoot),
+        .start_x,
+        .start_y,
+        .start_meteor,
+
+        .rgb_meteor,
+        .meteor_addr
+
+    );
+
+    image_meteor u_image_meteor (
+        .clk(clk65MHz),
+        .rgb(rgb_meteor),
+        .address(meteor_addr)
+    );
+
+    prog_meteor u_prog_meteor (
+        .clk(clk65MHz),
+        .rst,
+        .start(start_meteor),
+        .start_x(start_x),
+        .start_y(start_y),
+        .direction_condition(toggle),
+        .meteor_x,
+        .meteor_y
+    );
+
+    toggle u_toggle (
+        .clk(clk65MHz),
+        .rst,
+        .toggle
+    );
+
 //----------MOUSE----------------
     draw_mouse u_draw_mouse (
         .clk65MHz(clk65MHz),
         .rst,
 
-        .in(draw_spaceship_if),
+        .in(draw_meteor_if),
         .out(draw_mouse_if),
 
         .xpos(xpos),
@@ -210,49 +266,5 @@ module top_vga (
     );
 
 //----------------------------
-
-    draw_rect_char u_draw_rect_char (
-        .clk(clk65MHz),
-        .rst,
-        .in(draw_bg_if),
-        .out(draw_char_if),
-
-        .char_line_pixels(char_line_pixels),
-        .char_xy(char_xy),
-        .char_line(char_line)
-    );
-    
-    char_rom u_char_rom (
-        .clk(clk65MHz),
-        .rst,
-        .char_xy(char_xy),
-        .char_code(char_code)
-    );
-
-    always_comb begin
-        address = {char_code, char_line};
-    end
-
-    font_rom u_font_rom (
-        .clk(clk65MHz),
-        .char_line_pixels(char_line_pixels),
-        .addr(address)
-    );
-
-    draw_rect_ctl u_draw_rect_ctl (
-        .clk(clk_delay),
-        .rst,
-        .mouse_left(left),
-        .mouse_xpos(xpos),
-        .mouse_ypos(ypos),
-        .xpos(),
-        .ypos()
-    );
-
-    delay u_delay (
-        .clk(clk65MHz),
-        .rst,
-        .clk_delay(clk_delay)
-    );
 
 endmodule

@@ -32,24 +32,26 @@ set xdc_files {
 
 # Specify SystemVerilog design files location   -- EDIT
 set sv_files {
-    ../rtl/vga_pkg.sv
-    ../rtl/vga_timing.sv
+    ../rtl/Game/vga_pkg.sv
+    ../rtl/Game/vga_timing.sv
+    ../rtl/Game/top_vga.sv
+    ../rtl/Game/vga_if.sv
     ../rtl/Background/draw_bg.sv
     ../rtl/Background/image_bg.sv
-    ../rtl/top_vga.sv
     ../rtl/Spaceship/draw_spaceship.sv
     ../rtl/Spaceship/image_ship.sv
     ../rtl/Bullet/draw_bullet.sv
     ../rtl/Bullet/image_bullet.sv
     ../rtl/Bullet/shoot.sv
-    ../rtl/vga_if.sv
+    ../rtl/Meteorite/draw_meteor.sv
+    ../rtl/Meteorite/image_meteor.sv
+    ../rtl/Meteorite/prog_meteor.sv
+    ../rtl/Meteorite/toggle.sv
+    ../rtl/String/char_rom.sv
+    ../rtl/String/draw_rect_char.sv
+    ../rtl/String/draw_string.sv
+    ../rtl/String/font_rom.sv
     ../rtl/Mouse/draw_mouse.sv
-    ../rtl/draw_rect_ctl.sv
-    ../rtl/delay.sv
-    ../rtl/draw_rect_char.sv
-    ../rtl/font_rom.sv
-    ../rtl/delay_rgb.sv
-    ../rtl/char_rom.sv
     rtl/top_vga_basys3.sv
 }
 
@@ -71,4 +73,5 @@ set mem_files {
     ../rtl/Spaceship/spaceship.data
     ../rtl/Background/background.data
     ../rtl/Bullet/bullet.data
+    ../rtl/Meteorite/meteor.data
 }
