@@ -13,6 +13,8 @@ sv work ../../rtl/Game/vga_pkg.sv \
         ../../rtl/Game/vga_timing.sv \
         ../../rtl/Game/vga_if.sv \
         ../../rtl/Game/top_vga.sv \
+        ../../rtl/Game/draw_logo.sv \
+        ../../rtl/Game/image_logo.sv \
         ../../rtl/Background/draw_bg.sv \
         ../../rtl/Background/image_bg.sv \
         ../../rtl/Spaceship/draw_spaceship.sv \

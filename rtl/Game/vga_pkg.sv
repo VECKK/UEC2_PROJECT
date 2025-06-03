@@ -16,7 +16,7 @@ package vga_pkg;
     localparam WIDTH = 78;
     localparam HEIGHT = 72;
 
-// Satrt position of spaceship
+// Start position of spaceship
     localparam [11:0] START_X = (HOR_PIXELS / 2) - (WIDTH / 2);
     localparam [11:0] START_Y = VER_PIXELS - HEIGHT - 20;
 

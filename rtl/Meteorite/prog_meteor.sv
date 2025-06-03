@@ -63,9 +63,9 @@ module prog_meteor
                     direction_nxt = RIGHT_DOWN;
             end
             LEFT_UP: begin
-                if (meteor_x <= METEOR_SPEED)
+                if (meteor_x <= 0)
                     direction_nxt = RIGHT_UP;
-                else if (meteor_y <= METEOR_SPEED)
+                else if (meteor_y <= 0)
                     direction_nxt = LEFT_DOWN;
                 else
                     direction_nxt = LEFT_UP;
@@ -84,7 +84,7 @@ module prog_meteor
 
     // Blok wyznaczający następną pozycję
     always_comb begin : pos_nxt_blk
-        case (direction)
+        case (direction_nxt)
             LEFT_DOWN: begin
                 xpos_nxt = meteor_x - METEOR_SPEED;
                 ypos_nxt = meteor_y + METEOR_SPEED;

@@ -3,11 +3,14 @@ module draw_meteor
         METEOR_W = 150,
         METEOR_H = 150,
         DELAY = 130000000 // ok 2s
+
     )(
         input  logic clk65MHz,
         input  logic rst,
         input  logic active_schoot,
         input  logic [11:0] rgb_meteor,
+        input  logic [11:0] meteor_x,
+        input  logic [11:0] meteor_y,
         output logic [14:0] meteor_addr,
         output logic [11:0] start_x,
         output logic [11:0] start_y,
@@ -170,9 +173,9 @@ module draw_meteor
         rgb_nxt = two_rgb;
         meteor_addr = 0;
         if (meteor_visible &&
-            two_hcount >= meteor_pos_x && two_hcount < meteor_pos_x + METEOR_W &&
-            two_vcount >= meteor_pos_y && two_vcount < meteor_pos_y + METEOR_H) begin
-            meteor_addr = (two_vcount - meteor_pos_y) * METEOR_W + (two_hcount - meteor_pos_x);
+            two_hcount >= meteor_x && two_hcount < meteor_x + METEOR_W &&
+            two_vcount >= meteor_y && two_vcount < meteor_y + METEOR_H && !two_hblnk && !two_vblnk) begin
+            meteor_addr = (two_vcount - meteor_y) * METEOR_W + (two_hcount - meteor_x);
             if (rgb_meteor == 12'hE3F) begin
                 rgb_nxt = two_rgb; // Use input RGB if rgb_pixel matches E3F
             end else begin

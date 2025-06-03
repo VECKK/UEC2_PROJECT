@@ -34,7 +34,7 @@ logic [11:0] two_rgb;
 logic        two_vsync, two_vblnk, two_hsync, two_hblnk;
 
 logic spaceship_follow_mouse = 1'b0;
-logic armed = 1'b0; // New flag
+logic armed = 1'b0; 
 
 // Po pierwszym kliknięciu prostokąt podąża za myszką
 always_ff @(posedge clk65MHz) begin
@@ -43,9 +43,9 @@ always_ff @(posedge clk65MHz) begin
         armed <= 1'b0;
     end else if (left_mouse) begin
         if (!spaceship_follow_mouse)
-            spaceship_follow_mouse <= 1'b1; // First click: start following
+            spaceship_follow_mouse <= 1'b1; 
         else
-            armed <= 1'b1; // Second and further clicks: allow shooting
+            armed <= 1'b1; 
     end
 end
 
@@ -54,7 +54,6 @@ always_comb begin
     if (spaceship_follow_mouse) begin
         spaceship_x = xpos - (WIDTH / 2);
         spaceship_y = ypos - (HEIGHT / 2);
-        // Only allow shooting if armed (after first click)
         active_schoot = armed ? 1'b1 : 1'b0;
 
         if (xpos > 1023 - (WIDTH / 2))
@@ -143,7 +142,7 @@ always_comb begin : spaceship_comb_blk
     if (two_hcount >= spaceship_x && two_hcount < spaceship_x + WIDTH &&
         two_vcount >= spaceship_y && two_vcount < spaceship_y + HEIGHT) begin
         if (rgb_pixel == 12'hE3F) begin
-            rgb_nxt = two_rgb; // Use input RGB if rgb_pixel matches E3F
+            rgb_nxt = two_rgb; 
         end else begin
             rgb_nxt = rgb_pixel;
         end

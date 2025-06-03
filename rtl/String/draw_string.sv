@@ -1,7 +1,7 @@
 module draw_string
     #(parameter
         CHAR_XPOS = 128, // X position
-        CHAR_YPOS = 200, // Y position
+        CHAR_YPOS = 215, // Y position
         CHAR_HEIGHT = 12, // height of the character in pixels
         WIDTH = 12, // number of characters in the horizontal direction
         SIZE = 3, // 2^SIZE = 8,
