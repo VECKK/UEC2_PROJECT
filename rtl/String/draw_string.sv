@@ -1,10 +1,11 @@
 module draw_string
     #(parameter
-        CHAR_XPOS = 352, // X position
-        CHAR_YPOS = 377, // Y position
-        WIDTH = 10, // number of characters in the horizontal direction
-        SIZE = 2, // 2^POWER_OF_2 = 4
-        TEXT = "START GAME", // text to be displayed
+        CHAR_XPOS = 128, // X position
+        CHAR_YPOS = 200, // Y position
+        CHAR_HEIGHT = 12, // height of the character in pixels
+        WIDTH = 12, // number of characters in the horizontal direction
+        SIZE = 3, // 2^SIZE = 8,
+        TEXT = "METEOR SPLIT", // text to be displayed
         COLOUR = 12'hC52 // color for the character, default is black
 
     )(
@@ -25,6 +26,7 @@ module draw_string
     draw_rect_char
     #( 
         .WIDTH(WIDTH),         // ilość znaków w poziomie
+        .CHAR_HEIGHT(CHAR_HEIGHT),// wysokość znaku
         .CHAR_XPOS(CHAR_XPOS), // X pozycja znaku
         .CHAR_YPOS(CHAR_YPOS), // Y pozycja znaku
         .COLOUR(COLOUR), // RGB color for the character

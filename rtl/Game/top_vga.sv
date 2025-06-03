@@ -53,6 +53,7 @@ module top_vga (
     vga_if draw_bg_if();
     vga_if draw_spaceship_if();
     vga_if draw_mouse_if();
+    vga_if draw_title_if();
     vga_if draw_string_if();
     vga_if draw_bullet_if();
     vga_if draw_meteor_if();
@@ -92,13 +93,32 @@ module top_vga (
         .rgb(rom_rgb)
     );
 
-//---------START GAME----------------
-    draw_string u_draw_string (
+//---------METEOR SPLIT----------------
+    draw_string u_draw_title (
         .clk(clk65MHz),
         .rst,
 
         .enable(!first_click_done),
         .in(draw_bg_if),
+        .out(draw_title_if)
+
+    );
+
+    draw_string
+    #(
+        .CHAR_XPOS(384),
+        .CHAR_YPOS(330),
+        .CHAR_HEIGHT(12),
+        .WIDTH(16),
+        .SIZE(1),
+        .TEXT(">Click to start<"),
+        .COLOUR(12'hFFF)
+    ) u_draw_string (
+        .clk(clk65MHz),
+        .rst,
+
+        .enable(!first_click_done),
+        .in(draw_title_if),
         .out(draw_string_if)
 
     );
