@@ -94,7 +94,7 @@ module draw_bullet (
     always_comb begin : spaceship_comb_blk
         rgb_nxt = two_rgb;
 
-        if (visible && 
+        if (visible &&  
             two_hcount >= (spaceship_x + ((WIDTH / 2) - 2)) && two_hcount < (spaceship_x + ((WIDTH / 2) - 2)) + BULLET_W &&
             two_vcount >= (spaceship_y + 2) && two_vcount < (spaceship_y + 2) + BULLET_H) begin
             if (rgb_bullet == 12'hE3F) begin

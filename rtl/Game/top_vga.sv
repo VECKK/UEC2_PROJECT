@@ -34,7 +34,7 @@ logic [11:0] rgb_pixel;
 logic [12:0] pixel_addr;
 logic left;
 logic [11:0] spaceship_x, spaceship_y;
-logic active_schoot;
+logic active_shoot;
 //bullet
 logic [11:0] rgb_bullet;
 logic [7:0] bullet_addr;
@@ -49,6 +49,7 @@ logic [11:0] start_x, start_y, meteor_x, meteor_y;
 logic toggle, start_meteor, clk_delay;
 //collision
 logic remove_spaceship;
+logic meteor_interactive;
 
 
 tbg_if timing_if();
@@ -167,7 +168,7 @@ draw_spaceship u_draw_spaceship (
     .remove(remove_spaceship),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
-    .active_schoot,
+    .active_shoot,
 
     .rgb_pixel,
     .pixel_addr
@@ -192,6 +193,7 @@ collision u_collision (
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
+    .meteor_interactive(meteor_interactive),
 
     .collision(),
     .remove_spaceship
@@ -230,7 +232,7 @@ shoot u_shoot (
     .fire(left),
     .xpos(spaceship_x),
     .ypos(spaceship_y),
-    .active_shoot(active_schoot),
+    .active_shoot(active_shoot),
     .remove(remove_bullet),
     .bullet_x,
     .bullet_y,
@@ -244,6 +246,8 @@ hit_meteor u_hit_meteor (
     .bullet_y(bullet_y),
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
+    .meteor_interactive(meteor_interactive),
+    .bullet_visible(bullet_visible),
 
     .hit(),
     .remove_bullet,
@@ -258,13 +262,14 @@ draw_meteor u_draw_meteor (
     .in(draw_spaceship_if),
     .out(draw_meteor_if),
 
-    .active_schoot(active_schoot),
+    .active_shoot(active_shoot),
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
     .remove(remove_meteor),
     .start_x,
     .start_y,
     .start_meteor,
+    .meteor_interactive,
 
     .rgb_meteor,
     .meteor_addr
@@ -328,8 +333,8 @@ always_comb begin
     if (left && !first_click_done) begin
         setx = 1'b1;
         sety = 1'b1;
-        value_x = START_X;
-        value_y = START_Y;
+        value_x = START_X + (WIDTH / 2);
+        value_y = START_Y + (HEIGHT / 2);
     end else begin
         setx = 1'b0;
         sety = 1'b0;

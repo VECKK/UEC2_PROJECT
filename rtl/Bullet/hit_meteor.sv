@@ -9,6 +9,8 @@ module hit_meteor
         input  logic [11:0] bullet_y,
         input  logic [11:0] meteor_x,
         input  logic [11:0] meteor_y,
+        input logic meteor_interactive,
+        input  logic        bullet_visible,
         output logic        hit,
         output logic        remove_bullet,
         output logic        remove_meteor
@@ -22,7 +24,7 @@ module hit_meteor
     logic collision;
     
     always_comb begin
-        collision =
+        collision = meteor_interactive && bullet_visible &&
             (bullet_x < meteor_x + METEOR_W) &&
             (bullet_x + BULLET_W > meteor_x) &&
             (bullet_y < meteor_y + METEOR_H) &&
