@@ -3,7 +3,7 @@ module draw_logo (
     input  logic rst,
     input  logic enable,
     input  logic [11:0] rgb_logo,
-    output logic [14:0] logo_addr,
+    output logic [13:0] logo_addr,
 
     vga_if.in in,
     vga_if.out out

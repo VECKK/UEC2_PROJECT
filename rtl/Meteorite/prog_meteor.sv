@@ -1,6 +1,6 @@
 module prog_meteor 
     #(parameter
-        METEOR_SPEED = 2,
+        METEOR_SPEED = 1,
         METEOR_W = 150,
         METEOR_H = 150
     )(

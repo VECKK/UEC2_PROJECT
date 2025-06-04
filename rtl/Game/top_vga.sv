@@ -16,42 +16,39 @@ timeprecision 1ps;
 
 import vga_pkg::*;
 
-logic [11:0] xpos;
-logic [11:0] ypos;
-//spaceship
-logic [11:0] rgb_pixel;
-logic [12:0] pixel_addr;
-logic left;
-logic [11:0] spaceship_x;
-logic [11:0] spaceship_y;
-logic active_schoot;
+logic [11:0] xpos, ypos;
 //background
 logic [11:0] rom_rgb;
 logic [13:0] rom_addr;
+//logo
+logic [11:0] rgb_logo;
+logic [13:0] logo_addr;
 //string
 logic string_toggle;
 //zmiana pozycji myszki
 logic first_click_done = 1'b0;
 logic setx, sety;
-logic [11:0] value_x;
-logic [11:0] value_y;
+logic [11:0] value_x, value_y;
+//spaceship
+logic [11:0] rgb_pixel;
+logic [12:0] pixel_addr;
+logic left;
+logic [11:0] spaceship_x, spaceship_y;
+logic active_schoot;
 //bullet
 logic [11:0] rgb_bullet;
 logic [7:0] bullet_addr;
-logic [11:0] bullet_x;
-logic [11:0] bullet_y;
+logic [11:0] bullet_x, bullet_y;
+//shooting
+logic bullet_visible;
+logic remove_bullet, remove_meteor;
 //meteorite
 logic [11:0] rgb_meteor;
 logic [14:0] meteor_addr;
-logic [11:0] start_x;
-logic [11:0] start_y;
-logic [11:0] meteor_x;
-logic [11:0] meteor_y;
-logic toggle;
-logic start_meteor;
-//logo
-logic [11:0] rgb_logo;
-logic [14:0] logo_addr;
+logic [11:0] start_x, start_y, meteor_x, meteor_y;
+logic toggle, start_meteor, clk_delay;
+//collision
+logic remove_spaceship;
 
 
 tbg_if timing_if();
@@ -99,7 +96,7 @@ image_bg u_image_bg (
     .rgb(rom_rgb)
 );
 
-//---------METEOR SPLIT----------------
+//---------LOGO----------------
 draw_logo u_draw_logo (
     .clk65MHz(clk65MHz),
     .rst(rst),
@@ -116,6 +113,8 @@ image_logo u_image_logo (
     .rgb(rgb_logo),
     .address(logo_addr)
 );
+
+//----------TITLE----------------
 
 draw_string u_draw_title (
     .clk(clk65MHz),
@@ -164,9 +163,10 @@ draw_spaceship u_draw_spaceship (
 
     .xpos(xpos),
     .ypos(ypos),
+    .left_mouse(left),
+    .remove(remove_spaceship),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
-    .left_mouse(left),
     .active_schoot,
 
     .rgb_pixel,
@@ -182,6 +182,21 @@ image_ship u_image_ship (
 
 );
 
+//--------COLLISION---------------
+
+collision u_collision (
+    .clk(clk65MHz),
+    .rst,
+
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x),
+    .meteor_y(meteor_y),
+
+    .collision(),
+    .remove_spaceship
+);
+
 //----------BULLET-----------------
 draw_bullet u_draw_bullet (
     .clk65MHz(clk65MHz),
@@ -192,6 +207,7 @@ draw_bullet u_draw_bullet (
 
     .spaceship_x(bullet_x),
     .spaceship_y(bullet_y),
+    .visible(bullet_visible),
 
     .rgb_bullet,
     .bullet_addr
@@ -206,6 +222,8 @@ image_bullet u_image_bullet (
 
 );
 
+//-------------SHOOTING-----------------
+
 shoot u_shoot (
     .clk(clk65MHz),
     .rst,
@@ -213,21 +231,37 @@ shoot u_shoot (
     .xpos(spaceship_x),
     .ypos(spaceship_y),
     .active_shoot(active_schoot),
+    .remove(remove_bullet),
     .bullet_x,
-    .bullet_y
+    .bullet_y,
+    .visible(bullet_visible)
+);
+
+hit_meteor u_hit_meteor (
+    .clk(clk65MHz),
+    .rst,
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x),
+    .meteor_y(meteor_y),
+
+    .hit(),
+    .remove_bullet,
+    .remove_meteor
 );
 
 //---------METEORITE-------------
 draw_meteor u_draw_meteor (
     .clk65MHz(clk65MHz),
     .rst,
-    .meteor_x(meteor_x),
-    .meteor_y(meteor_y),
 
     .in(draw_spaceship_if),
     .out(draw_meteor_if),
 
     .active_schoot(active_schoot),
+    .meteor_x(meteor_x),
+    .meteor_y(meteor_y),
+    .remove(remove_meteor),
     .start_x,
     .start_y,
     .start_meteor,
@@ -244,7 +278,7 @@ image_meteor u_image_meteor (
 );
 
 prog_meteor u_prog_meteor (
-    .clk(clk65MHz),
+    .clk(clk_delay),
     .rst,
     .start(start_meteor),
     .start_x(start_x),
@@ -260,6 +294,12 @@ toggle #(
     .clk(clk65MHz),
     .rst,
     .toggle
+);
+
+delay u_delay (
+    .clk(clk65MHz),
+    .rst,
+    .clk_delay(clk_delay)
 );
 
 //----------MOUSE----------------

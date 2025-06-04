@@ -7,7 +7,7 @@ module image_logo (
 reg [11:0] rom [0:16383]; // 128*128= 16384
 
 /* Relative path from the simulation or synthesis working directory */
-initial $readmemh("../../rtl/Game/logo.data", rom);
+initial $readmemh("../../rtl/Logo/logo.data", rom);
 
 always_ff @(posedge clk)
     rgb <= rom[address];

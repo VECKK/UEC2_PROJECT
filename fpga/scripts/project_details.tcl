@@ -36,19 +36,22 @@ set sv_files {
     ../rtl/Game/vga_timing.sv
     ../rtl/Game/top_vga.sv
     ../rtl/Game/vga_if.sv
-    ../rtl/Game/draw_logo.sv
-    ../rtl/Game/image_logo.sv
+    ../rtl/Logo/draw_logo.sv
+    ../rtl/Logo/image_logo.sv
     ../rtl/Background/draw_bg.sv
     ../rtl/Background/image_bg.sv
     ../rtl/Spaceship/draw_spaceship.sv
     ../rtl/Spaceship/image_ship.sv
+    ../rtl/Spaceship/collision.sv
     ../rtl/Bullet/draw_bullet.sv
     ../rtl/Bullet/image_bullet.sv
     ../rtl/Bullet/shoot.sv
+    ../rtl/Bullet/hit_meteor.sv
     ../rtl/Meteorite/draw_meteor.sv
     ../rtl/Meteorite/image_meteor.sv
     ../rtl/Meteorite/prog_meteor.sv
     ../rtl/Meteorite/toggle.sv
+    ../rtl/Meteorite/delay.sv
     ../rtl/String/char_rom.sv
     ../rtl/String/draw_rect_char.sv
     ../rtl/String/draw_string.sv
@@ -76,5 +79,5 @@ set mem_files {
     ../rtl/Background/background.data
     ../rtl/Bullet/bullet.data
     ../rtl/Meteorite/meteor.data
-    ../rtl/Game/logo.data
+    ../rtl/Logo/logo.data
 }

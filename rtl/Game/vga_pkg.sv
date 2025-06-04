@@ -20,4 +20,8 @@ package vga_pkg;
     localparam [11:0] START_X = (HOR_PIXELS / 2) - (WIDTH / 2);
     localparam [11:0] START_Y = VER_PIXELS - HEIGHT - 20;
 
+//Bullet parameters
+    localparam BULLET_W = 6;
+    localparam BULLET_H = 40;
+
 endpackage

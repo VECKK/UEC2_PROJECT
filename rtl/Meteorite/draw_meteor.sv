@@ -3,14 +3,14 @@ module draw_meteor
         METEOR_W = 150,
         METEOR_H = 150,
         DELAY = 130000000 // ok 2s
-
     )(
         input  logic clk65MHz,
         input  logic rst,
         input  logic active_schoot,
-        input  logic [11:0] rgb_meteor,
         input  logic [11:0] meteor_x,
         input  logic [11:0] meteor_y,
+        input  logic remove,
+        input  logic [11:0] rgb_meteor,
         output logic [14:0] meteor_addr,
         output logic [11:0] start_x,
         output logic [11:0] start_y,
@@ -95,6 +95,9 @@ module draw_meteor
             meteor_pos_y <= 0;
             meteor_index <= startup_seed_counter[3:0] % NUM_POSITIONS;
             start_meteor <= 1'b0;
+        end else if (remove) begin
+            start_meteor <= 1'b0;
+            meteor_visible <= 1'b0;
         end else if (active_schoot && !meteor_visible && meteor_ready) begin
             meteor_visible <= 1'b1;
             meteor_index <= (meteor_index + 3) % NUM_POSITIONS; // "losowy" przeskok

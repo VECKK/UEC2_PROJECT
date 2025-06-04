@@ -4,6 +4,7 @@ module draw_bullet (
         input  logic [11:0] rgb_bullet,
         input  logic [11:0] spaceship_x,
         input  logic [11:0] spaceship_y,
+        input  logic        visible,
         output logic [7:0] bullet_addr,
 
         vga_if.in in,
@@ -14,9 +15,6 @@ module draw_bullet (
     timeprecision 1ps;
 
     import vga_pkg::*;
-
-    localparam BULLET_W = 6;
-    localparam BULLET_H = 40;
 
     logic [11:0] rgb_nxt;
     logic [10:0] one_vcount;
@@ -96,7 +94,8 @@ module draw_bullet (
     always_comb begin : spaceship_comb_blk
         rgb_nxt = two_rgb;
 
-        if (two_hcount >= (spaceship_x + ((WIDTH / 2) - 2)) && two_hcount < (spaceship_x + ((WIDTH / 2) - 2)) + BULLET_W &&
+        if (visible && 
+            two_hcount >= (spaceship_x + ((WIDTH / 2) - 2)) && two_hcount < (spaceship_x + ((WIDTH / 2) - 2)) + BULLET_W &&
             two_vcount >= (spaceship_y + 2) && two_vcount < (spaceship_y + 2) + BULLET_H) begin
             if (rgb_bullet == 12'hE3F) begin
                 rgb_nxt = two_rgb; // Use input RGB if rgb_bullet matches E3F
@@ -107,7 +106,7 @@ module draw_bullet (
     end
 
     always_comb begin
-        if (
+        if (visible &&
             two_hcount >= (spaceship_x + ((WIDTH / 2) - 2)) && two_hcount < (spaceship_x + ((WIDTH / 2) - 2)) + BULLET_W &&
             two_vcount >= (spaceship_y + 2) && two_vcount < (spaceship_y + 2) + BULLET_H
         ) begin

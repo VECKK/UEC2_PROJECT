@@ -9,8 +9,10 @@ module shoot
         input  logic [11:0] xpos,
         input  logic [11:0] ypos,
         input  logic active_shoot,
+        input  logic remove,
         output logic [11:0] bullet_x,
-        output logic [11:0] bullet_y
+        output logic [11:0] bullet_y,
+        output logic visible
     );
 
     timeunit 1ns;
@@ -56,6 +58,7 @@ module shoot
             bullet_y   <= 0;
             xpos_fixed <= 0;
             fire_prev  <= 0;
+            visible    <= 0;
         end else begin
             state    <= next_state;
             bullet_x <= xpos_nxt;
@@ -64,6 +67,14 @@ module shoot
             if (update_bullet || state != UP)
                 bullet_y <= ypos_nxt;
             xpos_fixed <= (state == IDLE && fire && active_shoot) ? xpos : xpos_fixed;
+
+            if (remove) begin
+                visible <= 1'b0; // pocisk znika po kolizji
+            end else if (state == IDLE && fire && fire_prev == 0 && active_shoot && armed && (ypos >= 36)) begin
+                visible <= 1'b1; // pocisk pojawia się po wystrzale
+            end else if (state == UP && bullet_y <= SPEED) begin
+                visible <= 1'b0; // pocisk znika po wylocie poza ekran
+            end
         end
     end
 
