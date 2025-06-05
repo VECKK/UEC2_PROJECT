@@ -2,7 +2,8 @@ module draw_meteor
     #( parameter
         METEOR_W = 150,
         METEOR_H = 150,
-        DELAY = 130000000 // ok 2s
+        DELAY = 130_000_000, // ok 2s
+        DELAY_BITS = 27
     )(
         input  logic clk65MHz,
         input  logic rst,
@@ -15,7 +16,7 @@ module draw_meteor
         output logic [11:0] start_x,
         output logic [11:0] start_y,
         output logic start_meteor,
-        output logic meteor_interactive,
+        output logic visible,
 
         vga_if.in in,
         vga_if.out out
@@ -25,20 +26,6 @@ module draw_meteor
     timeprecision 1ps;
 
     import vga_pkg::*;
-
-    localparam int NUM_POSITIONS = 10;
-    localparam int X_POSITIONS [0:NUM_POSITIONS-1] = '{
-        57,
-        164,
-        281,
-        368,
-        485,
-        582,
-        679,
-        776,
-        873,
-        910
-    };
 
     /**
      * Local variables and signals
@@ -56,18 +43,17 @@ module draw_meteor
 
     logic meteor_visible = 1'b0;
     logic [11:0] meteor_pos_x, meteor_pos_y;
-    logic [26:0] meteor_delay_counter;
+    logic [DELAY_BITS - 1:0] meteor_delay_counter;
     logic        meteor_ready = 1'b0;
-    logic [15:0] startup_seed_counter = 16'd0;
-    logic        seed_active = 1'b1;
-    logic [3:0] meteor_index = 0;
+    logic [9:0] random_x;
+    logic enable_random;
 
     always_ff @(posedge clk65MHz) begin
         if (rst) begin
-            meteor_delay_counter <= 27'd0;
+            meteor_delay_counter <= 0;
             meteor_ready <= 1'b0;
         end else if (meteor_visible) begin
-            meteor_delay_counter <= 27'd0;
+            meteor_delay_counter <= 0;
             meteor_ready <= 1'b0;
         end else if (active_shoot) begin
             meteor_delay_counter <= meteor_delay_counter + 1;
@@ -77,43 +63,37 @@ module draw_meteor
         end
     end
 
+    assign enable_random = (active_shoot && !meteor_visible && meteor_ready);
+    
+    random u_random (
+        .clk(clk65MHz),
+        .rst,
+        .enable(enable_random),
+        .random(random_x)
+    );
     
     always_ff @(posedge clk65MHz) begin
         if (rst) begin
-            meteor_interactive <= 1'b0;
             meteor_visible <= 1'b0;
             meteor_pos_x <= 0;
             meteor_pos_y <= 0;
-            meteor_index <= startup_seed_counter[3:0] % NUM_POSITIONS;
             start_meteor <= 1'b0;
         end else if (remove) begin
             start_meteor <= 1'b0;
             meteor_visible <= 1'b0;
         end else if (active_shoot && !meteor_visible && meteor_ready) begin
-            meteor_interactive <= 1'b1;
             meteor_visible <= 1'b1;
-            meteor_index <= (meteor_index + 3) % NUM_POSITIONS; // "losowy" przeskok
-            meteor_pos_x <= X_POSITIONS[meteor_index][11:0];
-            meteor_pos_y <= 12'd30;
+            meteor_pos_x <= {2'b0, random_x};
+            meteor_pos_y <= 12'd0;
             start_meteor <= 1'b1;
         end else begin
             start_meteor <= 1'b0;
         end
     end
     
-    always_ff @(posedge clk65MHz) begin
-        if (rst) begin
-            startup_seed_counter <= 16'd0;
-            seed_active <= 1'b1;
-        end else if (seed_active) begin
-            startup_seed_counter <= startup_seed_counter + 1;
-        end
-        if (meteor_visible)
-            seed_active <= 1'b0;
-    end
-    
     assign start_x = meteor_pos_x;
     assign start_y = meteor_pos_y;
+    assign visible = meteor_visible;
 
     always_ff @(posedge clk65MHz) begin : one_ff_blk
         if (rst) begin

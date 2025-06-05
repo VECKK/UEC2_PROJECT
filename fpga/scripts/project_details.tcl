@@ -51,7 +51,7 @@ set sv_files {
     ../rtl/Meteorite/image_meteor.sv
     ../rtl/Meteorite/prog_meteor.sv
     ../rtl/Meteorite/toggle.sv
-    ../rtl/Meteorite/delay.sv
+    ../rtl/Meteorite/random.sv
     ../rtl/String/char_rom.sv
     ../rtl/String/draw_rect_char.sv
     ../rtl/String/draw_string.sv

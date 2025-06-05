@@ -42,14 +42,20 @@ logic [11:0] bullet_x, bullet_y;
 //shooting
 logic bullet_visible;
 logic remove_bullet, remove_meteor;
-//meteorite
+logic remove_bullet_v1, remove_bullet_v2;
+//meteorite 1
 logic [11:0] rgb_meteor;
 logic [14:0] meteor_addr;
 logic [11:0] start_x, start_y, meteor_x, meteor_y;
-logic toggle, start_meteor, clk_delay;
+logic toggle, start_meteor;
+//meteorite 2
+logic [11:0] rgb_meteor_v2;
+logic [14:0] meteor_addr_v2;
+logic [11:0] start_x_v2, start_y_v2, meteor_x_v2, meteor_y_v2;
+logic start_v2, remove_meteor_v2;
 //collision
-logic remove_spaceship;
-logic meteor_interactive;
+logic remove_spaceship, remove_spaceship_v1, remove_spaceship_v2;
+logic visible_meteor, visible_meteor_v2, blinking;
 
 
 tbg_if timing_if();
@@ -60,6 +66,7 @@ vga_if draw_title_if();
 vga_if draw_string_if();
 vga_if draw_bullet_if();
 vga_if draw_meteor_if();
+vga_if draw_meteor_v2_if();
 vga_if draw_logo_if();
 
 
@@ -169,6 +176,7 @@ draw_spaceship u_draw_spaceship (
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .active_shoot,
+    .blinking,
 
     .rgb_pixel,
     .pixel_addr
@@ -193,11 +201,29 @@ collision u_collision (
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
-    .meteor_interactive(meteor_interactive),
+    .meteor_interactive(visible_meteor),
+    .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship
+    .remove_spaceship(remove_spaceship_v1)
 );
+
+collision u_collision_v2 (
+    .clk(clk65MHz),
+    .rst,
+
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_v2),
+    .meteor_y(meteor_y_v2),
+    .meteor_interactive(visible_meteor_v2),
+    .spaceship_blinking(blinking),
+
+    .collision(),
+    .remove_spaceship(remove_spaceship_v2)
+);
+
+assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2;
 
 //----------BULLET-----------------
 draw_bullet u_draw_bullet (
@@ -239,22 +265,7 @@ shoot u_shoot (
     .visible(bullet_visible)
 );
 
-hit_meteor u_hit_meteor (
-    .clk(clk65MHz),
-    .rst,
-    .bullet_x(bullet_x),
-    .bullet_y(bullet_y),
-    .meteor_x(meteor_x),
-    .meteor_y(meteor_y),
-    .meteor_interactive(meteor_interactive),
-    .bullet_visible(bullet_visible),
-
-    .hit(),
-    .remove_bullet,
-    .remove_meteor
-);
-
-//---------METEORITE-------------
+//---------METEORITE_1------------
 draw_meteor u_draw_meteor (
     .clk65MHz(clk65MHz),
     .rst,
@@ -269,21 +280,15 @@ draw_meteor u_draw_meteor (
     .start_x,
     .start_y,
     .start_meteor,
-    .meteor_interactive,
+    .visible(visible_meteor),
 
     .rgb_meteor,
     .meteor_addr
 
 );
 
-image_meteor u_image_meteor (
-    .clk(clk65MHz),
-    .rgb(rgb_meteor),
-    .address(meteor_addr)
-);
-
 prog_meteor u_prog_meteor (
-    .clk(clk_delay),
+    .clk(clk65MHz),
     .rst,
     .start(start_meteor),
     .start_x(start_x),
@@ -293,6 +298,90 @@ prog_meteor u_prog_meteor (
     .meteor_y
 );
 
+image_meteor u_image_meteor (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor),
+    .address(meteor_addr)
+);
+
+hit_meteor u_hit_meteor (
+    .clk(clk65MHz),
+    .rst,
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x),
+    .meteor_y(meteor_y),
+    .meteor_interactive(visible_meteor),
+    .bullet_visible(bullet_visible),
+
+    .hit(),
+    .remove_bullet(remove_bullet_v1),
+    .remove_meteor(remove_meteor)
+);
+
+//----------METEORITE_2------------
+
+draw_meteor
+#(
+    .DELAY(138_500_000), // 2.125s
+    .DELAY_BITS(28)
+) u_draw_meteor_v2 (
+    .clk65MHz(clk65MHz),
+    .rst,
+
+    .in(draw_meteor_if),
+    .out(draw_meteor_v2_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_v2),
+    .meteor_y(meteor_y_v2),
+    .remove(remove_meteor_v2),
+    .start_x(start_x_v2),
+    .start_y(start_y_v2),
+    .start_meteor(start_v2),
+    .visible(visible_meteor_v2),
+
+    .rgb_meteor(rgb_meteor_v2),
+    .meteor_addr(meteor_addr_v2)
+
+);
+
+prog_meteor u_prog_meteor_v2 (
+    .clk(clk65MHz),
+    .rst,
+    .start(start_v2),
+    .start_x(start_x_v2),
+    .start_y(start_y_v2),
+    .direction_condition(toggle),
+    .meteor_x(meteor_x_v2),
+    .meteor_y(meteor_y_v2)
+);
+
+image_meteor u_image_meteor_v2 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_v2),
+    .address(meteor_addr_v2)
+);
+
+hit_meteor u_hit_meteor_v2 (
+    .clk(clk65MHz),
+    .rst,
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_v2),
+    .meteor_y(meteor_y_v2),
+    .meteor_interactive(visible_meteor_v2),
+    .bullet_visible(bullet_visible),
+
+    .hit(),
+    .remove_bullet(remove_bullet_v2),
+    .remove_meteor(remove_meteor_v2)
+);
+
+assign remove_bullet = remove_bullet_v1 | remove_bullet_v2;
+
+//----------TOGGLE----------------
+
 toggle #(
     .TOGGLE_MAX(8_125_000 - 1) //0.125s
 ) u_toggle_meteor (
@@ -301,18 +390,12 @@ toggle #(
     .toggle
 );
 
-delay u_delay (
-    .clk(clk65MHz),
-    .rst,
-    .clk_delay(clk_delay)
-);
-
 //----------MOUSE----------------
 draw_mouse u_draw_mouse (
     .clk65MHz(clk65MHz),
     .rst,
 
-    .in(draw_meteor_if),
+    .in(draw_meteor_v2_if),
     .out(draw_mouse_if),
 
     .xpos(xpos),

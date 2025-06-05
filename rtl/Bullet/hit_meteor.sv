@@ -9,7 +9,7 @@ module hit_meteor
         input  logic [11:0] bullet_y,
         input  logic [11:0] meteor_x,
         input  logic [11:0] meteor_y,
-        input logic meteor_interactive,
+        input  logic meteor_interactive,
         input  logic        bullet_visible,
         output logic        hit,
         output logic        remove_bullet,

@@ -10,6 +10,7 @@ module draw_spaceship (
         output logic [11:0] spaceship_x,
         output logic [11:0] spaceship_y,
         output logic active_shoot,
+        output logic blinking,
 
         vga_if.in in,
         vga_if.out out
@@ -38,7 +39,6 @@ module draw_spaceship (
     logic armed = 1'b0; 
     logic [3:0] blink_count;         // Licznik mignięć
     logic [22:0] blink_timer;        // Licznik czasu (dla 4 Hz przy 65 MHz: 16_250_000)
-    logic        blinking;           // Czy trwa miganie
     logic        blink_visible; 
 
     always_ff @(posedge clk65MHz) begin

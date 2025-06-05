@@ -68,9 +68,9 @@ module shoot
             xpos_fixed <= (state == IDLE && fire && active_shoot) ? xpos : xpos_fixed;
 
             if (remove) begin
-                visible <= 1'b0; // pocisk znika po kolizji
+                visible <= 1'b0; 
             end else if (state == IDLE && fire && fire_prev == 0 && active_shoot && armed && (ypos >= 36)) begin
-                visible <= 1'b1; // pocisk pojawia się po wystrzale
+                visible <= 1'b1; 
             end else if (state == UP && bullet_y <= SPEED) begin
                 visible <= 1'b0; // pocisk znika po wylocie poza ekran
             end
