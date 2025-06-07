@@ -13,6 +13,9 @@ sv work ../../rtl/Game/vga_pkg.sv \
         ../../rtl/Game/vga_timing.sv \
         ../../rtl/Game/vga_if.sv \
         ../../rtl/Game/top_vga.sv \
+        ../../rtl/Game/game_timer.sv \
+        ../../rtl/Lifes/draw_lifes.sv \
+        ../../rtl/Lifes/image_lifes.sv \
         ../../rtl/Logo/draw_logo.sv \
         ../../rtl/Logo/image_logo.sv \
         ../../rtl/Background/draw_bg.sv \

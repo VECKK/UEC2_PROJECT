@@ -56,6 +56,12 @@ logic start_v2, remove_meteor_v2;
 //collision
 logic remove_spaceship, remove_spaceship_v1, remove_spaceship_v2;
 logic visible_meteor, visible_meteor_v2, blinking;
+//lifes
+logic [11:0] lifes_rgb;
+logic [12:0] lifes_addr;
+logic [2:0] lifes_count, lifes_count_v1, lifes_count_v2, lifes_count_nxt;
+//timer
+logic [127:0] timer_text;
 
 
 tbg_if timing_if();
@@ -68,6 +74,8 @@ vga_if draw_bullet_if();
 vga_if draw_meteor_if();
 vga_if draw_meteor_v2_if();
 vga_if draw_logo_if();
+vga_if draw_lifes_if();
+vga_if draw_timer_if();
 
 
 /**
@@ -83,6 +91,36 @@ vga_timing u_vga_timing (
     .clk65MHz(clk65MHz),
     .rst,
     .tout(timing_if)
+);
+
+//----------TIMER----------------------
+
+game_timer 
+#(
+    .CLK_FREQ(65000000) // 65 MHz clock
+    ) u_game_timer (
+        .clk(clk65MHz),
+        .rst(rst),
+        .enable(first_click_done), // Start the timer after the first click
+        .text(timer_text) // Timer text output
+);
+
+draw_string
+#(
+    .CHAR_XPOS(800), // Adjust based on screen resolution
+    .CHAR_YPOS(730), // Adjust based on screen resolution
+    .CHAR_HEIGHT(12),
+    .WIDTH(16),
+    .SIZE(1),      
+    .COLOUR(12'hFFF) // White color
+) u_draw_timer (
+    .clk(clk65MHz),
+    .rst,
+    .active_shooting(active_shoot), // Not used in this context
+    .enable(first_click_done),       // Always enable the timer display
+    .text(timer_text[127:0]),   // Truncate timer_text to 128 bits
+    .in(draw_lifes_if),  // Connect to the previous stage in the VGA pipeline
+    .out(draw_timer_if)  // Output to the next stage
 );
 
 //----------BACKGROUND-----------------
@@ -102,6 +140,38 @@ image_bg u_image_bg (
     .clk(clk65MHz),
     .address(rom_addr),
     .rgb(rom_rgb)
+);
+
+//----------LIFES------------------
+
+always_ff @(posedge clk65MHz) begin
+    if (rst) begin
+        lifes_count <= 3;
+        lifes_count_nxt <= 0;
+    end else begin
+        lifes_count_nxt <= 3 - (lifes_count_v1 + lifes_count_v2);
+        lifes_count <= lifes_count_nxt;
+    end
+end
+
+draw_lifes u_draw_lifes (
+    .clk65MHz(clk65MHz),
+    .rst,
+    .enable(active_shoot),
+
+    .in(draw_meteor_v2_if),
+    .out(draw_lifes_if),
+
+    .lifes_rgb(lifes_rgb),
+    .lifes_addr(lifes_addr)
+);
+
+image_lifes u_image_lifes (
+    .clk(clk65MHz),
+    .health(lifes_count),
+
+    .rgb(lifes_rgb),
+    .address(lifes_addr)
 );
 
 //---------LOGO----------------
@@ -129,6 +199,8 @@ draw_string u_draw_title (
     .rst,
 
     .enable(!first_click_done),
+    .text(),
+    .active_shooting(),
     .in(draw_logo_if),
     .out(draw_title_if)
 
@@ -141,12 +213,14 @@ draw_string
     .CHAR_HEIGHT(12),
     .WIDTH(16),
     .SIZE(1),
-    .TEXT(">Click to start<"),
+    .STATIC_TEXT (">Click to start<"), 
     .COLOUR(12'hFFF)
 ) u_draw_string (
     .clk(clk65MHz),
     .rst,
 
+    .text(),
+    .active_shooting(),
     .enable(!first_click_done && string_toggle),
     .in(draw_title_if),
     .out(draw_string_if)
@@ -193,6 +267,8 @@ image_ship u_image_ship (
 
 //--------COLLISION---------------
 
+assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2;
+
 collision u_collision (
     .clk(clk65MHz),
     .rst,
@@ -205,7 +281,9 @@ collision u_collision (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_v1)
+    .life_counter(lifes_count_v1),
+    .remove_spaceship(remove_spaceship_v1),
+    .end_game()
 );
 
 collision u_collision_v2 (
@@ -220,10 +298,10 @@ collision u_collision_v2 (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_v2)
+    .life_counter(lifes_count_v2),
+    .remove_spaceship(remove_spaceship_v2),
+    .end_game()
 );
-
-assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2;
 
 //----------BULLET-----------------
 draw_bullet u_draw_bullet (
@@ -395,7 +473,7 @@ draw_mouse u_draw_mouse (
     .clk65MHz(clk65MHz),
     .rst,
 
-    .in(draw_meteor_v2_if),
+    .in(draw_timer_if),
     .out(draw_mouse_if),
 
     .xpos(xpos),

@@ -1,17 +1,18 @@
 module draw_string
     #(parameter
-        CHAR_XPOS = 128, // X position
-        CHAR_YPOS = 215, // Y position
-        CHAR_HEIGHT = 12, // height of the character in pixels
-        WIDTH = 12, // number of characters in the horizontal direction
-        SIZE = 3, // 2^SIZE = 8,
-        TEXT = "METEOR SPLIT", // text to be displayed
-        COLOUR = 12'hC52 // color for the character, default is black
-
+        CHAR_XPOS = 128,       // X position
+        CHAR_YPOS = 215,       // Y position
+        CHAR_HEIGHT = 12,      // Height of the character in pixels
+        WIDTH = 12,            // Number of characters in the horizontal direction
+        SIZE = 3,              // 2^SIZE = 8
+        COLOUR = 12'hC52,      // Color for the character, default is black
+        STATIC_TEXT = "METEOR SPLIT"       // Static text (default empty)
     )(
         input logic clk,
         input logic rst,
         input logic enable,
+        input logic active_shooting,
+        input logic [8*WIDTH-1:0] text, // Dynamic text input (WIDTH characters, 8 bits each)
         
         vga_if.in in,
         vga_if.out out
@@ -47,11 +48,11 @@ module draw_string
 
     char_rom 
     #(
-        .TEXT(TEXT),
-        .TEXT_SIZE(WIDTH)
+        .TEXT_SIZE(WIDTH) // Keep the width parameter
     )
     u_char_rom_start_screen (
         .clk(clk),
+        .text(active_shooting ? text : STATIC_TEXT), 
         .char_xy(char_xy),
         .char_code(char_code)
     );
