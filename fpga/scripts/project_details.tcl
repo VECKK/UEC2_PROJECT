@@ -49,6 +49,8 @@ set sv_files {
     ../rtl/Bullet/hit_meteor.sv
     ../rtl/Meteorite/draw_meteor.sv
     ../rtl/Meteorite/image_meteor.sv
+    ../rtl/Meteorite/image_medium_meteor.sv
+    ../rtl/Meteorite/image_small_meteor.sv
     ../rtl/Meteorite/prog_meteor.sv
     ../rtl/Meteorite/toggle.sv
     ../rtl/Meteorite/random.sv
@@ -80,4 +82,6 @@ set mem_files {
     ../rtl/Bullet/bullet.data
     ../rtl/Meteorite/meteor.data
     ../rtl/Logo/logo.data
+    ../rtl/Meteorite/medium_meteor.data
+    ../rtl/Meteorite/small_meteor.data
 }

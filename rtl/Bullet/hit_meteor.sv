@@ -33,20 +33,17 @@ module hit_meteor
 
     always_ff @(posedge clk) begin
         if (rst) begin
-            hit           <= 1'b0;
-            remove_bullet <= 1'b0;
-            remove_meteor <= 1'b0;
+            hit   <= 1'b0;
         end else begin
             if (collision) begin
-                hit           <= 1'b1;
-                remove_bullet <= 1'b1;
-                remove_meteor <= 1'b1;
+                hit   <= 1'b1;
             end else begin
-                hit           <= 1'b0;
-                remove_bullet <= 1'b0;
-                remove_meteor <= 1'b0;
+                hit   <= 1'b0;
             end
         end
     end
+
+    assign remove_bullet = hit;
+    assign remove_meteor = hit;
 
 endmodule

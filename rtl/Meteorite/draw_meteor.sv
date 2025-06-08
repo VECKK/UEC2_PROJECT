@@ -3,7 +3,8 @@ module draw_meteor
         METEOR_W = 150,
         METEOR_H = 150,
         DELAY = 130_000_000, // ok 2s
-        DELAY_BITS = 27
+        DELAY_BITS = 27,
+        ADDR = 14
     )(
         input  logic clk65MHz,
         input  logic rst,
@@ -11,12 +12,18 @@ module draw_meteor
         input  logic [11:0] meteor_x,
         input  logic [11:0] meteor_y,
         input  logic remove,
+        input  logic [11:0] ext_start_x,
+        input  logic [11:0] ext_start_y, 
+        input  logic        use_external_start,
+        input  logic        enable, 
         input  logic [11:0] rgb_meteor,
-        output logic [14:0] meteor_addr,
+        output logic [ADDR:0] meteor_addr,
         output logic [11:0] start_x,
         output logic [11:0] start_y,
         output logic start_meteor,
         output logic visible,
+        output logic meteor_gone,
+
 
         vga_if.in in,
         vga_if.out out
@@ -47,6 +54,7 @@ module draw_meteor
     logic        meteor_ready = 1'b0;
     logic [9:0] random_x;
     logic enable_random;
+    logic meteor_gone_nxt;
 
     always_ff @(posedge clk65MHz) begin
         if (rst) begin
@@ -78,22 +86,33 @@ module draw_meteor
             meteor_pos_x <= 0;
             meteor_pos_y <= 0;
             start_meteor <= 1'b0;
+            meteor_gone_nxt  <= 1'b0;
         end else if (remove) begin
             start_meteor <= 1'b0;
             meteor_visible <= 1'b0;
-        end else if (active_shoot && !meteor_visible && meteor_ready) begin
+            meteor_gone_nxt    <= 1'b1;
+            meteor_pos_x <= meteor_x;
+            meteor_pos_y <= meteor_y;
+        end else if (active_shoot && !meteor_visible && meteor_ready && !meteor_gone && enable) begin
             meteor_visible <= 1'b1;
-            meteor_pos_x <= {2'b0, random_x};
-            meteor_pos_y <= 12'd0;
+            if (use_external_start) begin
+                meteor_pos_x <= ext_start_x;
+                meteor_pos_y <= ext_start_y;
+            end else begin
+                meteor_pos_x <= {2'b0, random_x};
+                meteor_pos_y <= 12'd0;
+            end
             start_meteor <= 1'b1;
         end else begin
             start_meteor <= 1'b0;
+
         end
     end
     
     assign start_x = meteor_pos_x;
     assign start_y = meteor_pos_y;
     assign visible = meteor_visible;
+    assign meteor_gone = meteor_gone_nxt;
 
     always_ff @(posedge clk65MHz) begin : one_ff_blk
         if (rst) begin

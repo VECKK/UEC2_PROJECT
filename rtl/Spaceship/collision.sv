@@ -26,23 +26,22 @@ module collision
         collision_detected = meteor_interactive && !spaceship_blinking &&
             (spaceship_x < meteor_x + METEOR_W) &&
             (spaceship_x + WIDTH > meteor_x) &&
-            (spaceship_y - 10 < meteor_y + METEOR_H) &&
-            (spaceship_y - 10 + HEIGHT - 10 > meteor_y);
+            (spaceship_y + 5 < meteor_y + METEOR_H) &&
+            (spaceship_y + HEIGHT - 20 > meteor_y);
     end
 
     always_ff @(posedge clk) begin
         if (rst) begin
             collision        <= 1'b0;
-            remove_spaceship <= 1'b0;
         end else begin
             if (collision_detected) begin
                 collision        <= 1'b1;
-                remove_spaceship <= 1'b1;
             end else begin
                 collision        <= 1'b0;
-                remove_spaceship <= 1'b0;
             end
         end
     end
+
+    assign remove_spaceship = collision;
 
 endmodule

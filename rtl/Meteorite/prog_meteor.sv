@@ -2,14 +2,16 @@ module prog_meteor
     #(parameter
         METEOR_SPEED = 1400,
         METEOR_W = 150,
-        METEOR_H = 150
+        METEOR_H = 150,
+        DIRECTION = 1 // 1 = dół, 0 = góra
     )(
         input  logic        clk,
         input  logic        rst,
         input  logic        start,
         input  logic [11:0] start_x,
         input  logic [11:0] start_y,
-        input  logic        direction_condition, // losowy bit: 0 = lewo-dół, 1 = prawo-dół
+        input  logic        direction_condition, // losowy bit
+        input  logic        enable,
         output logic [11:0] meteor_x,
         output logic [11:0] meteor_y
     );
@@ -38,8 +40,11 @@ module prog_meteor
             ypos_q12_28 <= {start_y, 28'd0};
             meteor_x <= start_x;
             meteor_y <= start_y;
-            direction  <= direction_condition ? RIGHT_DOWN : LEFT_DOWN;
-        end else begin
+            if (DIRECTION) // dół
+                direction <= direction_condition ? RIGHT_DOWN : LEFT_DOWN;
+            else           // góra
+                direction <= direction_condition ? RIGHT_UP : LEFT_UP;
+        end else if (enable) begin
             xpos_q12_28 <= xpos_nxt_q12_28;
             ypos_q12_28 <= ypos_nxt_q12_28;
             meteor_x <= xpos_q12_28[39:28];
@@ -70,7 +75,7 @@ module prog_meteor
             LEFT_UP: begin
                 if (xpos_q12_28 <= METEOR_SPEED)
                     direction_nxt = RIGHT_UP;
-                else if (ypos_q12_28 <= 0)
+                else if (ypos_q12_28 <= METEOR_SPEED)
                     direction_nxt = LEFT_DOWN;
                 else
                     direction_nxt = LEFT_UP;
