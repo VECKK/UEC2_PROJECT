@@ -47,12 +47,12 @@ logic remove_bullet_v1, remove_bullet_v2, remove_bullet_medium, remove_bullet_me
 //meteorite 1
 logic [11:0] rgb_meteor;
 logic [14:0] meteor_addr;
-logic [11:0] start_x, start_y, meteor_x, meteor_y, ext_start_x, ext_start_y;
+logic [11:0] start_x, start_y, meteor_x, meteor_y;
 logic toggle, start_meteor, meteor_gone;
 //meteorite 2
 logic [11:0] rgb_meteor_v2;
 logic [14:0] meteor_addr_v2;
-logic [11:0] start_x_v2, start_y_v2, meteor_x_v2, meteor_y_v2, ext_start_x_v2, ext_start_y_v2;
+logic [11:0] start_x_v2, start_y_v2, meteor_x_v2, meteor_y_v2;
 logic start_v2, remove_meteor_v2, meteor_gone_v2;
 //medium meteorite 1
 logic [11:0] rgb_meteor_medium;
@@ -80,6 +80,11 @@ logic remove_spaceship, remove_spaceship_v1, remove_spaceship_v2, remove_spacesh
 logic visible_meteor, visible_meteor_v2, visible_meteor_medium, visible_meteor_medium_v2, 
     visible_meteor_small, visible_meteor_small_v2;
 logic blinking;
+//points
+logic [1:0] points, points_v2, points_medium, points_medium_v2, points_small, points_small_v2;
+logic [5:0] total_points;
+//endgame
+logic endgame;
 
 
 tbg_if timing_if();
@@ -96,6 +101,7 @@ vga_if draw_medium_meteor_v2_if();
 vga_if draw_small_meteor_if();
 vga_if draw_small_meteor_v2_if();
 vga_if draw_logo_if();
+vga_if draw_points_if();
 
 
 /**
@@ -157,6 +163,7 @@ draw_string u_draw_title (
     .rst,
 
     .enable(!first_click_done),
+    .value(0),
     .in(draw_logo_if),
     .out(draw_title_if)
 
@@ -176,6 +183,7 @@ draw_string
     .rst,
 
     .enable(!first_click_done && string_toggle),
+    .value(0),
     .in(draw_title_if),
     .out(draw_string_if)
 
@@ -461,8 +469,8 @@ draw_meteor u_draw_meteor (
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
     .remove(remove_meteor),
-    .ext_start_x(ext_start_x),
-    .ext_start_y(ext_start_y),
+    .ext_start_x(12'd0),
+    .ext_start_y(12'd0),
     .use_external_start(1'b0),
     .enable(1'b1),
     .start_x,
@@ -470,6 +478,7 @@ draw_meteor u_draw_meteor (
     .start_meteor,
     .visible(visible_meteor),
     .meteor_gone,
+    .points(points),
 
     .rgb_meteor,
     .meteor_addr
@@ -502,7 +511,8 @@ draw_meteor
     .METEOR_H(120),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(13)
+    .ADDR(13),
+    .POINTS(2)
 ) u_draw_medium_meteor (
     .clk65MHz(clk65MHz),
     .rst,
@@ -523,6 +533,7 @@ draw_meteor
     .start_meteor(start_medium),
     .visible(visible_meteor_medium),
     .meteor_gone(meteor_gone_medium),
+    .points(points_medium),
 
     .rgb_meteor(rgb_meteor_medium),
     .meteor_addr(meteor_addr_medium)
@@ -561,7 +572,8 @@ draw_meteor
     .METEOR_H(64),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(11)
+    .ADDR(11),
+    .POINTS(3)
 ) u_draw_small_meteor (
     .clk65MHz(clk65MHz),
     .rst,
@@ -582,6 +594,7 @@ draw_meteor
     .start_meteor(start_small),
     .visible(visible_meteor_small),
     .meteor_gone(meteor_gone_small),
+    .points(points_small),
 
     .rgb_meteor(rgb_meteor_small),
     .meteor_addr(meteor_addr_small)
@@ -620,7 +633,8 @@ draw_meteor
     .METEOR_H(64),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(11)
+    .ADDR(11),
+    .POINTS(3)
 ) u_draw_small_meteor_v2 (
     .clk65MHz(clk65MHz),
     .rst,
@@ -641,6 +655,7 @@ draw_meteor
     .start_meteor(start_small_v2),
     .visible(visible_meteor_small_v2),
     .meteor_gone(meteor_gone_small_v2),
+    .points(points_small_v2),
 
     .rgb_meteor(rgb_meteor_small_v2),
     .meteor_addr(meteor_addr_small_v2)
@@ -679,7 +694,8 @@ draw_meteor
     .METEOR_H(120),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(13)
+    .ADDR(13),
+    .POINTS(2)
 ) u_draw_medium_meteor_v2 (
     .clk65MHz(clk65MHz),
     .rst,
@@ -700,6 +716,7 @@ draw_meteor
     .start_meteor(start_medium_v2),
     .visible(visible_meteor_medium_v2),
     .meteor_gone(meteor_gone_medium_v2),
+    .points(points_medium_v2),
 
     .rgb_meteor(rgb_meteor_medium_v2),
     .meteor_addr(meteor_addr_medium_v2)
@@ -747,8 +764,8 @@ draw_meteor
     .meteor_x(meteor_x_v2),
     .meteor_y(meteor_y_v2),
     .remove(remove_meteor_v2),
-    .ext_start_x(ext_start_x_v2),
-    .ext_start_y(ext_start_y_v2),
+    .ext_start_x(12'd0),
+    .ext_start_y(12'd0),
     .use_external_start(1'b0),
     .enable(1'b1),
     .start_x(start_x_v2),
@@ -756,6 +773,7 @@ draw_meteor
     .start_meteor(start_v2),
     .visible(visible_meteor_v2),
     .meteor_gone(meteor_gone_v2),
+    .points(points_v2),
 
     .rgb_meteor(rgb_meteor_v2),
     .meteor_addr(meteor_addr_v2)
@@ -781,6 +799,8 @@ image_meteor u_image_meteor_v2 (
 );
 
 
+assign endgame = meteor_gone_small && meteor_gone_small_v2;
+
 //----------TOGGLE----------------
 
 toggle #(
@@ -791,12 +811,38 @@ toggle #(
     .toggle
 );
 
+//--------POINTS--------------------------------------------
+
+assign total_points = points + points_v2 + points_medium + points_medium_v2 + points_small + points_small_v2;
+
+draw_string
+#(
+    .CHAR_XPOS(900),
+    .CHAR_YPOS(700),
+    .CHAR_HEIGHT(12),
+    .WIDTH(2),
+    .SIZE(1),
+    .TEXT("00"),
+    .COLOUR(12'hFFF),
+    .DYNAMIC(1),
+    .VALUE_BITS(6) // 0-63
+) u_draw_points (
+    .clk(clk65MHz),
+    .rst,
+
+    .enable(active_shoot && !endgame),
+    .value(total_points),
+    .in(draw_small_meteor_v2_if),
+    .out(draw_points_if)
+
+);
+
 //----------MOUSE--------------------------------------------
 draw_mouse u_draw_mouse (
     .clk65MHz(clk65MHz),
     .rst,
 
-    .in(draw_small_meteor_v2_if),
+    .in(draw_points_if),
     .out(draw_mouse_if),
 
     .xpos(xpos),

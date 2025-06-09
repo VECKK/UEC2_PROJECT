@@ -6,12 +6,15 @@ module draw_string
         WIDTH = 12, // number of characters in the horizontal direction
         SIZE = 3, // 2^SIZE = 8,
         TEXT = "METEOR SPLIT", // text to be displayed
-        COLOUR = 12'hC52 // color for the character, default is black
+        COLOUR = 12'hC52,  // color for the character, default is black
+        DYNAMIC = 0, // 1 = dynamic, 0 = static
+        VALUE_BITS = 6
 
     )(
         input logic clk,
         input logic rst,
         input logic enable,
+        input logic [VALUE_BITS - 1:0] value,
         
         vga_if.in in,
         vga_if.out out
@@ -21,6 +24,13 @@ module draw_string
     logic [6:0] char_code;
     logic [3:0] char_line;
     logic [7:0] char_line_pixels;
+    logic [7:0] text_dynamic [0:WIDTH - 1];
+
+    always_comb begin
+        // Dziesiątki i jedności
+        text_dynamic[0] = "0" + ((value / 10) % 10);
+        text_dynamic[1] = "0" + (value % 10);
+    end
 
 
     draw_rect_char
@@ -53,6 +63,8 @@ module draw_string
     u_char_rom_start_screen (
         .clk(clk),
         .char_xy(char_xy),
+        .use_dynamic_text(DYNAMIC), // 1 = dynamic, 0 = static
+        .text(text_dynamic),
         .char_code(char_code)
     );
 

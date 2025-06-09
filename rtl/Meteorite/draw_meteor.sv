@@ -4,7 +4,8 @@ module draw_meteor
         METEOR_H = 150,
         DELAY = 130_000_000, // ok 2s
         DELAY_BITS = 27,
-        ADDR = 14
+        ADDR = 14,
+        POINTS = 1
     )(
         input  logic clk65MHz,
         input  logic rst,
@@ -23,6 +24,7 @@ module draw_meteor
         output logic start_meteor,
         output logic visible,
         output logic meteor_gone,
+        output logic [1:0] points,
 
 
         vga_if.in in,
@@ -87,12 +89,14 @@ module draw_meteor
             meteor_pos_y <= 0;
             start_meteor <= 1'b0;
             meteor_gone_nxt  <= 1'b0;
+            points <= 0;
         end else if (remove) begin
             start_meteor <= 1'b0;
             meteor_visible <= 1'b0;
-            meteor_gone_nxt    <= 1'b1;
-            meteor_pos_x <= meteor_x;
-            meteor_pos_y <= meteor_y;
+            meteor_gone_nxt <= 1'b1;
+            meteor_pos_x <= meteor_x + (METEOR_W/2);
+            meteor_pos_y <= meteor_y + (METEOR_H/2);
+            points       <= POINTS;
         end else if (active_shoot && !meteor_visible && meteor_ready && !meteor_gone && enable) begin
             meteor_visible <= 1'b1;
             if (use_external_start) begin
