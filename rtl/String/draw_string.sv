@@ -9,12 +9,12 @@ module draw_string
         COLOUR = 12'hC52,  // color for the character, default is black
         DYNAMIC = 0, // 1 = dynamic, 0 = static
         VALUE_BITS = 6
-
     )(
         input logic clk,
         input logic rst,
         input logic enable,
         input logic [VALUE_BITS - 1:0] value,
+        input logic [VALUE_BITS - 1:0] game_time, // Seconds for MM:SS format
         
         vga_if.in in,
         vga_if.out out
@@ -25,11 +25,25 @@ module draw_string
     logic [3:0] char_line;
     logic [7:0] char_line_pixels;
     logic [7:0] text_dynamic [0:WIDTH - 1];
+    logic [7:0] time_dynamic [0:WIDTH - 1]; // Array for MM:SS format
+
 
     always_comb begin
+
+        //TIME: MM:SS
+    automatic logic [5:0] minutes = game_time / 60;
+    automatic logic [5:0] seconds = game_time % 60;
+
         // Dziesiątki i jedności
         text_dynamic[0] = "0" + ((value / 10) % 10);
         text_dynamic[1] = "0" + (value % 10);
+
+        // Update time_dynamic to display time in MM:SS format
+        time_dynamic[0] = "0" + (minutes / 10); // Tens place of minutes
+        time_dynamic[1] = "0" + (minutes % 10); // Units place of minutes
+        time_dynamic[2] = ":";                  // Colon separator
+        time_dynamic[3] = "0" + (seconds / 10); // Tens place of seconds
+        time_dynamic[4] = "0" + (seconds % 10);
     end
 
 

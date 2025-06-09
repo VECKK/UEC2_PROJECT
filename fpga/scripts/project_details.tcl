@@ -36,6 +36,8 @@ set sv_files {
     ../rtl/Game/vga_timing.sv
     ../rtl/Game/top_vga.sv
     ../rtl/Game/vga_if.sv
+    ../rtl/Lifes/draw_lifes.sv
+    ../rtl/Lifes/image_lifes.sv
     ../rtl/Logo/draw_logo.sv
     ../rtl/Logo/image_logo.sv
     ../rtl/Background/draw_bg.sv
@@ -84,4 +86,8 @@ set mem_files {
     ../rtl/Logo/logo.data
     ../rtl/Meteorite/medium_meteor.data
     ../rtl/Meteorite/small_meteor.data
+    ../rtl/Lifes/lifes0.data
+    ../rtl/Lifes/lifes1.data
+    ../rtl/Lifes/lifes2.data
+    ../rtl/Lifes/lifes3.data
 }

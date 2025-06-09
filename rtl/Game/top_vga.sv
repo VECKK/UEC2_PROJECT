@@ -80,6 +80,13 @@ logic remove_spaceship, remove_spaceship_v1, remove_spaceship_v2, remove_spacesh
 logic visible_meteor, visible_meteor_v2, visible_meteor_medium, visible_meteor_medium_v2, 
     visible_meteor_small, visible_meteor_small_v2;
 logic blinking;
+//lifes
+logic [11:0] lifes_rgb;
+logic [12:0] lifes_addr;
+logic [2:0] lifes_count, lifes_count_v1, lifes_count_v2, lifes_count_medium, lifes_count_medium_v2, lifes_count_small, lifes_count_small_v2, lifes_count_nxt;
+//timer
+logic [25:0] clk_counter, clk_counter_nxt; 
+logic [15:0] game_time, game_time_nxt;  
 //points
 logic [1:0] points, points_v2, points_medium, points_medium_v2, points_small, points_small_v2;
 logic [5:0] total_points;
@@ -101,6 +108,8 @@ vga_if draw_medium_meteor_v2_if();
 vga_if draw_small_meteor_if();
 vga_if draw_small_meteor_v2_if();
 vga_if draw_logo_if();
+vga_if draw_lifes_if();
+vga_if draw_timer_if();
 vga_if draw_points_if();
 
 
@@ -112,6 +121,23 @@ assign vs = draw_mouse_if.vsync;
 assign hs = draw_mouse_if.hsync;
 assign {r,g,b} = draw_mouse_if.rgb[11:0];
 
+
+// Clock-based time counter
+always_ff @(posedge clk65MHz or posedge rst) begin
+    if (rst) begin
+        clk_counter <= 0;
+        clk_counter_nxt <= 0;
+        game_time <= 0;
+        game_time_nxt <= 0;
+    end else begin
+        if (clk_counter == 65_000_000 - 1) begin
+            clk_counter_nxt <= 0;
+            game_time <= game_time_nxt + 1; // Increment game time every second
+        end else begin
+            clk_counter <= clk_counter_nxt + 1;
+        end
+    end
+end
 
 vga_timing u_vga_timing (
     .clk65MHz(clk65MHz),
@@ -136,6 +162,38 @@ image_bg u_image_bg (
     .clk(clk65MHz),
     .address(rom_addr),
     .rgb(rom_rgb)
+);
+
+//----------LIFES------------------
+
+always_ff @(posedge clk65MHz) begin
+    if (rst) begin
+        lifes_count <= 3;
+        lifes_count_nxt <= 0;
+    end else begin
+        lifes_count_nxt <= 3 - (lifes_count_v1 + lifes_count_v2);
+        lifes_count <= lifes_count_nxt;
+    end
+end
+
+draw_lifes u_draw_lifes (
+    .clk65MHz(clk65MHz),
+    .rst,
+    .enable(active_shoot),
+
+    .in(draw_small_meteor_v2_if),
+    .out(draw_lifes_if),
+
+    .lifes_rgb(lifes_rgb),
+    .lifes_addr(lifes_addr)
+);
+
+image_lifes u_image_lifes (
+    .clk(clk65MHz),
+    .health(lifes_count),
+
+    .rgb(lifes_rgb),
+    .address(lifes_addr)
 );
 
 //---------LOGO------------------------------------
@@ -164,6 +222,7 @@ draw_string u_draw_title (
 
     .enable(!first_click_done),
     .value(0),
+    .game_time(0),
     .in(draw_logo_if),
     .out(draw_title_if)
 
@@ -184,6 +243,7 @@ draw_string
 
     .enable(!first_click_done && string_toggle),
     .value(0),
+    .game_time(0),
     .in(draw_title_if),
     .out(draw_string_if)
 
@@ -241,7 +301,9 @@ collision u_collision (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_v1)
+    .remove_spaceship(remove_spaceship_v1),
+    .life_counter(lifes_count_v1),
+    .end_game()
 );
 
 collision u_collision_v2 (
@@ -256,7 +318,9 @@ collision u_collision_v2 (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_v2)
+    .remove_spaceship(remove_spaceship_v2),
+    .life_counter(lifes_count_v2),
+    .end_game()
 );
 
 collision u_medium_collision (
@@ -271,7 +335,9 @@ collision u_medium_collision (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_medium)
+    .remove_spaceship(remove_spaceship_medium),
+    .life_counter(lifes_count_medium),
+    .end_game()
 );
 
 collision u_medium_collision_v2 (
@@ -286,7 +352,9 @@ collision u_medium_collision_v2 (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_medium_v2)
+    .remove_spaceship(remove_spaceship_medium_v2),
+    .life_counter(lifes_count_medium_v2),
+    .end_game()
 );
 
 collision u_small_collision (
@@ -301,7 +369,9 @@ collision u_small_collision (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_small)
+    .remove_spaceship(remove_spaceship_small),
+    .life_counter(lifes_count_small),
+    .end_game()
 );
 
 collision u_small_collision_v2 (
@@ -316,7 +386,9 @@ collision u_small_collision_v2 (
     .spaceship_blinking(blinking),
 
     .collision(),
-    .remove_spaceship(remove_spaceship_small_v2)
+    .remove_spaceship(remove_spaceship_small_v2),
+    .life_counter(lifes_count_small_v2),
+    .end_game()
 );
 
 assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2 | remove_spaceship_medium | remove_spaceship_medium_v2
@@ -832,9 +904,34 @@ draw_string
 
     .enable(active_shoot && !endgame),
     .value(total_points),
-    .in(draw_small_meteor_v2_if),
+    .game_time(0), // Not used for points display
+    .in(draw_lifes_if),
     .out(draw_points_if)
 
+);
+
+//----------TIMER--------------------------------------------
+
+draw_string
+#(
+    .CHAR_XPOS(200),         // X position for the timer (right bottom corner)
+    .CHAR_YPOS(200),         // Y position for the timer (right bottom corner)
+    .CHAR_HEIGHT(12),        // Character height
+    .WIDTH(5),               // Width for MM:SS format
+    .SIZE(1),                // Scale factor
+    .TEXT("00:00"),          // Default text
+    .COLOUR(12'hFFF),        // White color
+    .DYNAMIC(1),             // Enable dynamic text
+    .VALUE_BITS(16)          // Game time in seconds (0-65535)
+) u_draw_timer (
+    .clk(clk65MHz),
+    .rst,
+
+    .enable(active_shoot && !endgame), // Enable when the game is active
+    .value(0),              // Points display (not used for timer)
+    .game_time(game_time),             // Pass the game time in seconds
+    .in(draw_points_if),               // Input from the points display
+    .out(draw_timer_if)                // Output to the next module
 );
 
 //----------MOUSE--------------------------------------------
@@ -842,7 +939,7 @@ draw_mouse u_draw_mouse (
     .clk65MHz(clk65MHz),
     .rst,
 
-    .in(draw_points_if),
+    .in(draw_timer_if),
     .out(draw_mouse_if),
 
     .xpos(xpos),
