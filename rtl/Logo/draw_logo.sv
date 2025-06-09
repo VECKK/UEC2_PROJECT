@@ -3,7 +3,7 @@ module draw_logo (
     input  logic rst,
     input  logic enable,
     input  logic [11:0] rgb_logo,
-    output logic [13:0] logo_addr,
+    output logic [11:0] logo_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -28,6 +28,8 @@ module draw_logo (
     localparam LOGO_H = 128;
     localparam logo_x = 12'd448; 
     localparam logo_y = 12'd75;
+    localparam IMG_WIDTH = 64;
+    localparam IMG_HEIGHT = 64; 
 
     always_ff @(posedge clk65MHz) begin : one_ff_blk
         if (rst) begin
@@ -92,10 +94,18 @@ module draw_logo (
     always_comb begin
         rgb_nxt = two_rgb;
         logo_addr = 0;
+
         if (enable &&
             two_hcount >= logo_x && two_hcount < logo_x + LOGO_W &&
             two_vcount >= logo_y && two_vcount < logo_y + LOGO_H && !two_hblnk && !two_vblnk) begin
-            logo_addr = (two_vcount - logo_y) * LOGO_W + (two_hcount - logo_x);
+
+            // Compute scaled coordinates
+            automatic int img_x = ((two_hcount - logo_x) >> 1);
+            automatic int img_y = ((two_vcount - logo_y) >> 1);
+
+            // Compute ROM address (row-major order)
+            logo_addr = img_y * IMG_WIDTH + img_x;
+
             if (rgb_logo == 12'hE3F) begin
                 rgb_nxt = two_rgb; 
             end else begin

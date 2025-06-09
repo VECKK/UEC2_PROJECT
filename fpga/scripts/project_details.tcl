@@ -86,6 +86,7 @@ set mem_files {
     ../rtl/Logo/logo.data
     ../rtl/Meteorite/medium_meteor.data
     ../rtl/Meteorite/small_meteor.data
+    ../rtl/Lifes/life.data
     ../rtl/Lifes/lifes0.data
     ../rtl/Lifes/lifes1.data
     ../rtl/Lifes/lifes2.data

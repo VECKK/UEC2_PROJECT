@@ -2,8 +2,10 @@ module draw_lifes(
     input  logic clk65MHz,
     input  logic rst,
     input  logic enable,
+    input  logic lost_life,
     input  logic [11:0] lifes_rgb,
-    output logic [12:0] lifes_addr,
+    output logic [10:0] lifes_addr,
+    output logic endgame,
 
     vga_if.in in,
     vga_if.out out
@@ -13,6 +15,8 @@ timeunit 1ns;
 timeprecision 1ps;
 
 import vga_pkg::*;
+
+
 
 logic [11:0] rgb_nxt;
 logic [10:0] one_vcount;
@@ -24,10 +28,41 @@ logic [10:0] two_hcount;
 logic [11:0] two_rgb;
 logic        two_vsync, two_vblnk, two_hsync, two_hblnk;
 
-localparam LIFE_W = 128;
+logic [1:0] i;
+logic [11:0] x_pos, y_pos;
+logic [1:0] lifes_count;
+logic lost_life_d, lost_life_edge;
+
+localparam LIFE_W = 40;
 localparam LIFE_H = 40;
 localparam life_x = 12'd10; 
 localparam life_y = 12'd718;
+localparam SPACE = 5;
+
+    // Edge detection logic
+    always_ff @(posedge clk65MHz or posedge rst) begin
+        if (rst) begin
+            lost_life_d <= 1'b0;
+        end else begin
+            lost_life_d <= lost_life;
+        end
+    end
+
+    assign lost_life_edge = lost_life && !lost_life_d; // Detect rising edge of lost_life
+
+    // Life counter logic
+    always_ff @(posedge clk65MHz or posedge rst) begin
+        if (rst) begin
+            lifes_count <= 3; // Initialize to 3 lives
+        end else if (lost_life_edge && lifes_count > 0) begin
+            lifes_count <= lifes_count - 1; // Decrement lives on rising edge of lost_life
+        end
+    end
+
+    // Endgame logic
+    always_comb begin
+        endgame = (lifes_count == 0); // Set endgame high when no lives are left
+    end
 
     always_ff @(posedge clk65MHz) begin : one_ff_blk
         if (rst) begin
@@ -90,16 +125,28 @@ localparam life_y = 12'd718;
     end
 
     always_comb begin
-        rgb_nxt = two_rgb;
+        rgb_nxt = in.rgb;
         lifes_addr = 0;
-        if (enable &&
-            two_hcount >= life_x && two_hcount < life_x + LIFE_W &&
-            two_vcount >= life_y && two_vcount < life_y + LIFE_H && !two_hblnk && !two_vblnk) begin
-            lifes_addr = (two_vcount - life_y) * LIFE_W + (two_hcount - life_x);
-            if (lifes_rgb == 12'hE3F) begin
-                rgb_nxt = two_rgb; 
-            end else begin
-                rgb_nxt = lifes_rgb;
+
+        if (!in.vblnk && !in.hblnk && enable) begin
+            for (i = 0; i < 3; i++) begin
+                if (i < lifes_count) begin
+                
+                    x_pos = life_x + i * (LIFE_W + SPACE); 
+                    y_pos = life_y;
+
+                    if (in.hcount >= x_pos && in.hcount < x_pos + LIFE_W &&
+                        in.vcount >= y_pos && in.vcount < y_pos + LIFE_H) begin
+
+                        lifes_addr = (in.vcount - y_pos) * LIFE_W + (in.hcount - x_pos);
+
+                        if (lifes_rgb == 12'hE3F) begin
+                            rgb_nxt = two_rgb; 
+                        end else begin
+                            rgb_nxt = lifes_rgb; 
+                        end
+                    end
+                end
             end
         end
     end

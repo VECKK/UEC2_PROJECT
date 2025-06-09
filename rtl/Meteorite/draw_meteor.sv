@@ -4,8 +4,10 @@ module draw_meteor
         METEOR_H = 150,
         DELAY = 130_000_000, // ok 2s
         DELAY_BITS = 27,
-        ADDR = 14,
-        POINTS = 1
+        ADDR = 13,
+        POINTS = 1,
+        IMG_WIDTH = 128, 
+        IMG_HEIGHT = 128 
     )(
         input  logic clk65MHz,
         input  logic rst,
@@ -56,7 +58,7 @@ module draw_meteor
     logic        meteor_ready = 1'b0;
     logic [9:0] random_x;
     logic enable_random;
-    logic meteor_gone_nxt;
+    logic meteor_gone_nxt; 
 
     always_ff @(posedge clk65MHz) begin
         if (rst) begin
@@ -181,10 +183,18 @@ module draw_meteor
     always_comb begin
         rgb_nxt = two_rgb;
         meteor_addr = 0;
+
         if (meteor_visible &&
             two_hcount >= meteor_x && two_hcount < meteor_x + METEOR_W &&
             two_vcount >= meteor_y && two_vcount < meteor_y + METEOR_H && !two_hblnk && !two_vblnk) begin
-            meteor_addr = (two_vcount - meteor_y) * METEOR_W + (two_hcount - meteor_x);
+
+            // Compute scaled coordinates
+            automatic int img_x = ((two_hcount - meteor_x) >> 1);
+            automatic int img_y = ((two_vcount - meteor_y) >> 1);
+
+            // Compute ROM address (row-major order)
+            meteor_addr = img_y * IMG_WIDTH + img_x;
+
             if (rgb_meteor == 12'hE3F) begin
                 rgb_nxt = two_rgb; // Use input RGB if rgb_pixel matches E3F
             end else begin

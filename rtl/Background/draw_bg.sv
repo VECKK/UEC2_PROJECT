@@ -14,7 +14,7 @@ module draw_bg (
     import vga_pkg::*;
 
     localparam IMG_WIDTH = 128;
-    localparam IMG_HEIGHT = 96;
+
 
     logic [11:0] rgb_nxt;
     logic [10:0] one_vcount;
@@ -100,9 +100,11 @@ module draw_bg (
      * Compute ROM address (row-major order)
      */
     always_comb begin
-        if (two_hcount < HOR_PIXELS && two_vcount < VER_PIXELS) begin
-            automatic int img_x = (two_hcount * IMG_WIDTH) / HOR_PIXELS;
-            automatic int img_y = (two_vcount * IMG_HEIGHT) / VER_PIXELS;
+        if (two_hcount < HOR_PIXELS && two_vcount < VER_PIXELS && !two_hblnk && !two_vblnk) begin
+
+            automatic int img_x = (two_hcount >> 3);
+            automatic int img_y = (two_vcount >> 3);
+            
             rom_addr = img_y * IMG_WIDTH + img_x;
         end else begin
             rom_addr = 0;

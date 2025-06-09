@@ -1,10 +1,10 @@
 module image_small_meteor (
         input  logic clk ,
-        input  logic [11:0] address,
+        input  logic [9:0] address,
         output logic [11:0] rgb
     );
 
-    reg [11:0] rom [0:4095]; // 64*64= 4096
+    reg [11:0] rom [0:1023]; // 32 * 32 = 1024
 
     /* Relative path from the simulation or synthesis working directory */
     initial $readmemh("../../rtl/Meteorite/small_meteor.data", rom);

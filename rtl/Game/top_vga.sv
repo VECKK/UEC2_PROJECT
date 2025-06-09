@@ -22,7 +22,7 @@ logic [11:0] rom_rgb;
 logic [13:0] rom_addr;
 //logo
 logic [11:0] rgb_logo;
-logic [13:0] logo_addr;
+logic [11:0] logo_addr;
 //string
 logic string_toggle;
 //zmiana pozycji myszki
@@ -46,32 +46,32 @@ logic remove_bullet_v1, remove_bullet_v2, remove_bullet_medium, remove_bullet_me
     remove_bullet_small, remove_bullet_small_v2;
 //meteorite 1
 logic [11:0] rgb_meteor;
-logic [14:0] meteor_addr;
+logic [13:0] meteor_addr;
 logic [11:0] start_x, start_y, meteor_x, meteor_y;
 logic toggle, start_meteor, meteor_gone;
 //meteorite 2
 logic [11:0] rgb_meteor_v2;
-logic [14:0] meteor_addr_v2;
+logic [13:0] meteor_addr_v2;
 logic [11:0] start_x_v2, start_y_v2, meteor_x_v2, meteor_y_v2;
 logic start_v2, remove_meteor_v2, meteor_gone_v2;
 //medium meteorite 1
 logic [11:0] rgb_meteor_medium;
-logic [13:0] meteor_addr_medium;
+logic [11:0] meteor_addr_medium;
 logic [11:0] start_x_medium, start_y_medium, meteor_x_medium, meteor_y_medium;
 logic start_medium, remove_meteor_medium, meteor_gone_medium;
 //medium meteorite 2
 logic [11:0] rgb_meteor_medium_v2;
-logic [13:0] meteor_addr_medium_v2;
+logic [11:0] meteor_addr_medium_v2;
 logic [11:0] start_x_medium_v2, start_y_medium_v2, meteor_x_medium_v2, meteor_y_medium_v2;
 logic start_medium_v2, remove_meteor_medium_v2, meteor_gone_medium_v2;
 //small meteorite 1
 logic [11:0] rgb_meteor_small;
-logic [11:0] meteor_addr_small;
+logic [9:0] meteor_addr_small;
 logic [11:0] start_x_small, start_y_small, meteor_x_small, meteor_y_small;
 logic start_small, remove_meteor_small, meteor_gone_small;
 //small meteorite 2
 logic [11:0] rgb_meteor_small_v2;
-logic [11:0] meteor_addr_small_v2;
+logic [9:0] meteor_addr_small_v2;
 logic [11:0] start_x_small_v2, start_y_small_v2, meteor_x_small_v2, meteor_y_small_v2;
 logic start_small_v2, remove_meteor_small_v2, meteor_gone_small_v2;
 //collision
@@ -80,13 +80,11 @@ logic remove_spaceship, remove_spaceship_v1, remove_spaceship_v2, remove_spacesh
 logic visible_meteor, visible_meteor_v2, visible_meteor_medium, visible_meteor_medium_v2, 
     visible_meteor_small, visible_meteor_small_v2;
 logic blinking;
+logic collision, collision_v2, collision_medium, collision_medium_v2, collision_small, collision_small_v2;
 //lifes
 logic [11:0] lifes_rgb;
-logic [12:0] lifes_addr;
-logic [2:0] lifes_count, lifes_count_v1, lifes_count_v2, lifes_count_medium, lifes_count_medium_v2, lifes_count_small, lifes_count_small_v2, lifes_count_nxt;
-//timer
-logic [25:0] clk_counter, clk_counter_nxt; 
-logic [15:0] game_time, game_time_nxt;  
+logic [10:0] lifes_addr;
+logic lost_life;
 //points
 logic [1:0] points, points_v2, points_medium, points_medium_v2, points_small, points_small_v2;
 logic [5:0] total_points;
@@ -109,7 +107,6 @@ vga_if draw_small_meteor_if();
 vga_if draw_small_meteor_v2_if();
 vga_if draw_logo_if();
 vga_if draw_lifes_if();
-vga_if draw_timer_if();
 vga_if draw_points_if();
 
 
@@ -122,22 +119,7 @@ assign hs = draw_mouse_if.hsync;
 assign {r,g,b} = draw_mouse_if.rgb[11:0];
 
 
-// Clock-based time counter
-always_ff @(posedge clk65MHz or posedge rst) begin
-    if (rst) begin
-        clk_counter <= 0;
-        clk_counter_nxt <= 0;
-        game_time <= 0;
-        game_time_nxt <= 0;
-    end else begin
-        if (clk_counter == 65_000_000 - 1) begin
-            clk_counter_nxt <= 0;
-            game_time <= game_time_nxt + 1; // Increment game time every second
-        end else begin
-            clk_counter <= clk_counter_nxt + 1;
-        end
-    end
-end
+
 
 vga_timing u_vga_timing (
     .clk65MHz(clk65MHz),
@@ -166,20 +148,14 @@ image_bg u_image_bg (
 
 //----------LIFES------------------
 
-always_ff @(posedge clk65MHz) begin
-    if (rst) begin
-        lifes_count <= 3;
-        lifes_count_nxt <= 0;
-    end else begin
-        lifes_count_nxt <= 3 - (lifes_count_v1 + lifes_count_v2);
-        lifes_count <= lifes_count_nxt;
-    end
-end
+assign lost_life = collision || collision_v2 || collision_medium || collision_medium_v2 || collision_small || collision_small_v2;
 
 draw_lifes u_draw_lifes (
     .clk65MHz(clk65MHz),
     .rst,
     .enable(active_shoot),
+    .lost_life(lost_life),
+    .endgame(),
 
     .in(draw_small_meteor_v2_if),
     .out(draw_lifes_if),
@@ -190,7 +166,6 @@ draw_lifes u_draw_lifes (
 
 image_lifes u_image_lifes (
     .clk(clk65MHz),
-    .health(lifes_count),
 
     .rgb(lifes_rgb),
     .address(lifes_addr)
@@ -222,7 +197,6 @@ draw_string u_draw_title (
 
     .enable(!first_click_done),
     .value(0),
-    .game_time(0),
     .in(draw_logo_if),
     .out(draw_title_if)
 
@@ -243,7 +217,6 @@ draw_string
 
     .enable(!first_click_done && string_toggle),
     .value(0),
-    .game_time(0),
     .in(draw_title_if),
     .out(draw_string_if)
 
@@ -300,10 +273,8 @@ collision u_collision (
     .meteor_interactive(visible_meteor),
     .spaceship_blinking(blinking),
 
-    .collision(),
-    .remove_spaceship(remove_spaceship_v1),
-    .life_counter(lifes_count_v1),
-    .end_game()
+    .collision(collision),
+    .remove_spaceship(remove_spaceship_v1)
 );
 
 collision u_collision_v2 (
@@ -317,10 +288,8 @@ collision u_collision_v2 (
     .meteor_interactive(visible_meteor_v2),
     .spaceship_blinking(blinking),
 
-    .collision(),
-    .remove_spaceship(remove_spaceship_v2),
-    .life_counter(lifes_count_v2),
-    .end_game()
+    .collision(collision_v2),
+    .remove_spaceship(remove_spaceship_v2)
 );
 
 collision u_medium_collision (
@@ -334,10 +303,8 @@ collision u_medium_collision (
     .meteor_interactive(visible_meteor_medium),
     .spaceship_blinking(blinking),
 
-    .collision(),
-    .remove_spaceship(remove_spaceship_medium),
-    .life_counter(lifes_count_medium),
-    .end_game()
+    .collision(collision_medium),
+    .remove_spaceship(remove_spaceship_medium)
 );
 
 collision u_medium_collision_v2 (
@@ -351,10 +318,8 @@ collision u_medium_collision_v2 (
     .meteor_interactive(visible_meteor_medium_v2),
     .spaceship_blinking(blinking),
 
-    .collision(),
-    .remove_spaceship(remove_spaceship_medium_v2),
-    .life_counter(lifes_count_medium_v2),
-    .end_game()
+    .collision(collision_medium_v2),
+    .remove_spaceship(remove_spaceship_medium_v2)
 );
 
 collision u_small_collision (
@@ -368,10 +333,8 @@ collision u_small_collision (
     .meteor_interactive(visible_meteor_small),
     .spaceship_blinking(blinking),
 
-    .collision(),
-    .remove_spaceship(remove_spaceship_small),
-    .life_counter(lifes_count_small),
-    .end_game()
+    .collision(collision_small),
+    .remove_spaceship(remove_spaceship_small)
 );
 
 collision u_small_collision_v2 (
@@ -385,10 +348,8 @@ collision u_small_collision_v2 (
     .meteor_interactive(visible_meteor_small_v2),
     .spaceship_blinking(blinking),
 
-    .collision(),
-    .remove_spaceship(remove_spaceship_small_v2),
-    .life_counter(lifes_count_small_v2),
-    .end_game()
+    .collision(collision_small_v2),
+    .remove_spaceship(remove_spaceship_small_v2)
 );
 
 assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2 | remove_spaceship_medium | remove_spaceship_medium_v2
@@ -583,8 +544,10 @@ draw_meteor
     .METEOR_H(120),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(13),
-    .POINTS(2)
+    .ADDR(11),
+    .POINTS(2),
+    .IMG_HEIGHT(64),
+    .IMG_WIDTH(64)
 ) u_draw_medium_meteor (
     .clk65MHz(clk65MHz),
     .rst,
@@ -644,8 +607,10 @@ draw_meteor
     .METEOR_H(64),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(11),
-    .POINTS(3)
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_HEIGHT(32),
+    .IMG_WIDTH(32)
 ) u_draw_small_meteor (
     .clk65MHz(clk65MHz),
     .rst,
@@ -705,8 +670,10 @@ draw_meteor
     .METEOR_H(64),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(11),
-    .POINTS(3)
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_HEIGHT(32),
+    .IMG_WIDTH(32)
 ) u_draw_small_meteor_v2 (
     .clk65MHz(clk65MHz),
     .rst,
@@ -766,8 +733,10 @@ draw_meteor
     .METEOR_H(120),
     .DELAY(1),
     .DELAY_BITS(2),
-    .ADDR(13),
-    .POINTS(2)
+    .ADDR(11),
+    .POINTS(2),
+    .IMG_WIDTH(64),
+    .IMG_HEIGHT(64)
 ) u_draw_medium_meteor_v2 (
     .clk65MHz(clk65MHz),
     .rst,
@@ -904,34 +873,9 @@ draw_string
 
     .enable(active_shoot && !endgame),
     .value(total_points),
-    .game_time(0), // Not used for points display
     .in(draw_lifes_if),
     .out(draw_points_if)
 
-);
-
-//----------TIMER--------------------------------------------
-
-draw_string
-#(
-    .CHAR_XPOS(200),         // X position for the timer (right bottom corner)
-    .CHAR_YPOS(200),         // Y position for the timer (right bottom corner)
-    .CHAR_HEIGHT(12),        // Character height
-    .WIDTH(5),               // Width for MM:SS format
-    .SIZE(1),                // Scale factor
-    .TEXT("00:00"),          // Default text
-    .COLOUR(12'hFFF),        // White color
-    .DYNAMIC(1),             // Enable dynamic text
-    .VALUE_BITS(16)          // Game time in seconds (0-65535)
-) u_draw_timer (
-    .clk(clk65MHz),
-    .rst,
-
-    .enable(active_shoot && !endgame), // Enable when the game is active
-    .value(0),              // Points display (not used for timer)
-    .game_time(game_time),             // Pass the game time in seconds
-    .in(draw_points_if),               // Input from the points display
-    .out(draw_timer_if)                // Output to the next module
 );
 
 //----------MOUSE--------------------------------------------
@@ -939,7 +883,7 @@ draw_mouse u_draw_mouse (
     .clk65MHz(clk65MHz),
     .rst,
 
-    .in(draw_timer_if),
+    .in(draw_points_if),
     .out(draw_mouse_if),
 
     .xpos(xpos),
