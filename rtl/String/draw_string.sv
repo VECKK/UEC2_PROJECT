@@ -7,8 +7,9 @@ module draw_string
         SIZE = 3, // 2^SIZE = 8,
         TEXT = "METEOR SPLIT", // text to be displayed
         COLOUR = 12'hC52,  // color for the character, default is black
-        DYNAMIC = 0, // 1 = dynamic, 0 = static
-        VALUE_BITS = 6
+        VALUE_BITS = 2,
+        logic DYNAMIC = 1'd0 // 1 = dynamic, 0 = static
+
 
     )(
         input logic clk,
@@ -24,12 +25,15 @@ module draw_string
     logic [6:0] char_code;
     logic [3:0] char_line;
     logic [7:0] char_line_pixels;
-    logic [7:0] text_dynamic [0:WIDTH - 1];
+    logic [6:0] text_dynamic [0:WIDTH - 1];
 
     always_comb begin
         // Dziesiątki i jedności
         text_dynamic[0] = "0" + ((value / 10) % 10);
         text_dynamic[1] = "0" + (value % 10);
+        // Jeśli WIDTH > 2, pozostałe znaki mogą być puste (spacja)
+        for (int i = 2; i < WIDTH; i++)
+            text_dynamic[i] = " ";
     end
 
 

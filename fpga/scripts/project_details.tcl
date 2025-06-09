@@ -36,6 +36,8 @@ set sv_files {
     ../rtl/Game/vga_timing.sv
     ../rtl/Game/top_vga.sv
     ../rtl/Game/vga_if.sv
+    ../rtl/Game/timer.sv
+    ../rtl/Game/game_reset.sv
     ../rtl/Logo/draw_logo.sv
     ../rtl/Logo/image_logo.sv
     ../rtl/Background/draw_bg.sv

@@ -9,7 +9,7 @@ module char_rom
         input  logic       clk,
         input  logic [7:0] char_xy,
         input  logic       use_dynamic_text, // 1 = dynamiczny, 0 = stały
-        input  logic [7:0] text [0:TEXT_SIZE - 1],
+        input  logic [6:0] text [0:TEXT_SIZE - 1],
         output logic [6:0] char_code    // 7-bit ASCII output
     );
 
