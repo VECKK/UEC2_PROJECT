@@ -4,6 +4,7 @@ module draw_mouse (
         input  logic [11:0] xpos,
         input  logic [11:0] ypos,
         input  logic left_mouse,
+        input  logic endgame,
         output logic show_cursor,
 
         vga_if.in in,
@@ -19,6 +20,8 @@ module draw_mouse (
     always_ff @(posedge clk65MHz) begin
         if (rst)
             cursor_visible <= 1'b1; // reset: kursor widoczny
+        else if (endgame)
+            cursor_visible <= 1'b1;
         else if (left_mouse)
             cursor_visible <= 1'b0; // po kliknięciu: kursor znika na zawsze
     end

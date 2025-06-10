@@ -5,6 +5,7 @@ module draw_spaceship (
         input  logic [11:0] ypos,
         input  logic left_mouse,
         input  logic remove,
+        input  logic endgame,
         input  logic [11:0] rgb_pixel,
         output logic [12:0] pixel_addr,
         output logic [11:0] spaceship_x,
@@ -72,7 +73,7 @@ module draw_spaceship (
 
     // Po pierwszym kliknięciu prostokąt podąża za myszką
     always_ff @(posedge clk65MHz) begin
-        if (rst) begin
+        if (rst || endgame) begin
             spaceship_follow_mouse <= 1'b0;
             armed <= 1'b0;
         end else if (left_mouse) begin
