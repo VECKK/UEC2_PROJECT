@@ -6,8 +6,7 @@ module draw_meteor
         DELAY_BITS = 27,
         ADDR = 13,
         POINTS = 1,
-        IMG_WIDTH = 128, 
-        IMG_HEIGHT = 128 
+        IMG_WIDTH = 128
     )(
         input  logic clk65MHz,
         input  logic rst,

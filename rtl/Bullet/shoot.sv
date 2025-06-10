@@ -27,27 +27,28 @@ module shoot
     state_t state, next_state;
 
     logic [11:0] xpos_nxt, ypos_nxt, xpos_fixed;
+    logic [16:0] bullet_tick_nxt;
 
     // Add this counter for bullet update timing
     logic [16:0] bullet_tick; // Enough bits for 0..84635
-    logic update_bullet,fire_prev, armed;
+    logic update_bullet,fire_prev;
 
     assign update_bullet = (bullet_tick == 0);
 
-    always_ff @(posedge clk) begin
+    always_comb begin
         if (rst || state != UP)
-            bullet_tick <= 0;
+            bullet_tick_nxt = 0;
         else if (bullet_tick == 84634)
+            bullet_tick_nxt = 0;
+        else
+            bullet_tick_nxt = bullet_tick + 1;
+    end
+    
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst)
             bullet_tick <= 0;
         else
-            bullet_tick <= bullet_tick + 1;
-    end
-
-    always_ff @(posedge clk) begin
-        if (rst)
-            armed <= 1'b0;
-        else if (active_shoot && !armed)
-            armed <= 1'b1;
+            bullet_tick <= bullet_tick_nxt;
     end
 
     always_ff @(posedge clk) begin
@@ -69,7 +70,7 @@ module shoot
 
             if (remove) begin
                 visible <= 1'b0; 
-            end else if (state == IDLE && fire && fire_prev == 0 && active_shoot && armed && (ypos >= 36)) begin
+            end else if (state == IDLE && fire && fire_prev == 0 && active_shoot && (ypos >= 36)) begin
                 visible <= 1'b1; 
             end else if (state == UP && bullet_y <= SPEED) begin
                 visible <= 1'b0; // pocisk znika po wylocie poza ekran
@@ -81,7 +82,7 @@ module shoot
     always_comb begin
         case (state)
             // Only allow shooting if 'armed' is already set (i.e., after first click)
-            IDLE:    next_state = (fire == 1 && fire_prev == 0 && active_shoot && armed && (ypos >= 36)) ? UP : IDLE;
+            IDLE:    next_state = (fire == 1 && fire_prev == 0 && active_shoot && (ypos >= 36)) ? UP : IDLE;
             UP:      next_state = (bullet_y <= SPEED) ? IDLE : UP;
             default: next_state = IDLE;
         endcase

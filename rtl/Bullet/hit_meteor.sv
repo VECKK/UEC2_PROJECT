@@ -11,7 +11,6 @@ module hit_meteor
         input  logic [11:0] meteor_y,
         input  logic meteor_interactive,
         input  logic        bullet_visible,
-        output logic        hit,
         output logic        remove_bullet,
         output logic        remove_meteor
     );
@@ -21,7 +20,7 @@ module hit_meteor
 
     import vga_pkg::*;
 
-    logic collision;
+    logic hit, collision;
     
     always_comb begin
         collision = meteor_interactive && bullet_visible &&

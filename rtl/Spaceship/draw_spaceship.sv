@@ -48,13 +48,13 @@ module draw_spaceship (
             blink_count   <= 4'd0;
             blink_timer   <= 23'd0;
             blink_visible <= 1'b1;
-        end else if (remove && !blinking) begin
+        end else if (remove && !blinking && !endgame) begin
             // Start migania po zniknięciu
             blinking      <= 1'b1;
             blink_count   <= 4'd0;
             blink_timer   <= 23'd0;
             blink_visible <= 1'b0;
-        end else if (blinking) begin
+        end else if (blinking && !endgame) begin
             if (blink_timer < 8_125_000) begin // ok. 0.125 s
                 blink_timer <= blink_timer + 1;
             end else begin

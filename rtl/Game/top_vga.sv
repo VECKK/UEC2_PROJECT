@@ -42,8 +42,9 @@ logic [11:0] bullet_x, bullet_y;
 //shooting
 logic bullet_visible;
 logic remove_bullet, remove_meteor;
-logic remove_bullet_v1, remove_bullet_v2, remove_bullet_medium, remove_bullet_medium_v2, 
-    remove_bullet_small, remove_bullet_small_v2;
+logic remove_bullet_v1, remove_bullet_v2, remove_bullet_medium, remove_bullet_medium_v2, remove_bullet_medium_v3, remove_bullet_medium_v4, 
+      remove_bullet_small, remove_bullet_small_v2, remove_bullet_small_v3, remove_bullet_small_v4, remove_bullet_small_v5, 
+      remove_bullet_small_v6, remove_bullet_small_v7, remove_bullet_small_v8;
 //meteorite 1
 logic [11:0] rgb_meteor;
 logic [13:0] meteor_addr;
@@ -64,6 +65,16 @@ logic [11:0] rgb_meteor_medium_v2;
 logic [11:0] meteor_addr_medium_v2;
 logic [11:0] start_x_medium_v2, start_y_medium_v2, meteor_x_medium_v2, meteor_y_medium_v2;
 logic start_medium_v2, remove_meteor_medium_v2, meteor_gone_medium_v2;
+//medium meteorite 3
+logic [11:0] rgb_meteor_medium_v3;
+logic [11:0] meteor_addr_medium_v3;
+logic [11:0] start_x_medium_v3, start_y_medium_v3, meteor_x_medium_v3, meteor_y_medium_v3;
+logic start_medium_v3, remove_meteor_medium_v3, meteor_gone_medium_v3;
+//medium meteorite 4
+logic [11:0] rgb_meteor_medium_v4;
+logic [11:0] meteor_addr_medium_v4;
+logic [11:0] start_x_medium_v4, start_y_medium_v4, meteor_x_medium_v4, meteor_y_medium_v4;
+logic start_medium_v4, remove_meteor_medium_v4, meteor_gone_medium_v4;
 //small meteorite 1
 logic [11:0] rgb_meteor_small;
 logic [9:0] meteor_addr_small;
@@ -74,19 +85,53 @@ logic [11:0] rgb_meteor_small_v2;
 logic [9:0] meteor_addr_small_v2;
 logic [11:0] start_x_small_v2, start_y_small_v2, meteor_x_small_v2, meteor_y_small_v2;
 logic start_small_v2, remove_meteor_small_v2, meteor_gone_small_v2;
+//small meteorite 3
+logic [11:0] rgb_meteor_small_v3;
+logic [9:0] meteor_addr_small_v3;
+logic [11:0] start_x_small_v3, start_y_small_v3, meteor_x_small_v3, meteor_y_small_v3;
+logic start_small_v3, remove_meteor_small_v3, meteor_gone_small_v3;
+//small meteorite 4
+logic [11:0] rgb_meteor_small_v4;
+logic [9:0] meteor_addr_small_v4;
+logic [11:0] start_x_small_v4, start_y_small_v4, meteor_x_small_v4, meteor_y_small_v4;
+logic start_small_v4, remove_meteor_small_v4, meteor_gone_small_v4;
+//small meteorite 5
+logic [11:0] rgb_meteor_small_v5;
+logic [9:0] meteor_addr_small_v5;
+logic [11:0] start_x_small_v5, start_y_small_v5, meteor_x_small_v5, meteor_y_small_v5;
+logic start_small_v5, remove_meteor_small_v5, meteor_gone_small_v5;
+//small meteorite 6
+logic [11:0] rgb_meteor_small_v6;
+logic [9:0] meteor_addr_small_v6;
+logic [11:0] start_x_small_v6, start_y_small_v6, meteor_x_small_v6, meteor_y_small_v6;
+logic start_small_v6, remove_meteor_small_v6, meteor_gone_small_v6;
+//small meteorite 7
+logic [11:0] rgb_meteor_small_v7;
+logic [9:0] meteor_addr_small_v7;
+logic [11:0] start_x_small_v7, start_y_small_v7, meteor_x_small_v7, meteor_y_small_v7;
+logic start_small_v7, remove_meteor_small_v7, meteor_gone_small_v7;
+//small meteorite 8
+logic [11:0] rgb_meteor_small_v8;
+logic [9:0] meteor_addr_small_v8;
+logic [11:0] start_x_small_v8, start_y_small_v8, meteor_x_small_v8, meteor_y_small_v8;
+logic start_small_v8, remove_meteor_small_v8, meteor_gone_small_v8;
 //collision
-logic remove_spaceship, remove_spaceship_v1, remove_spaceship_v2, remove_spaceship_medium, remove_spaceship_medium_v2,
-    remove_spaceship_small, remove_spaceship_small_v2;
-logic visible_meteor, visible_meteor_v2, visible_meteor_medium, visible_meteor_medium_v2, 
-    visible_meteor_small, visible_meteor_small_v2;
+logic remove_spaceship, remove_spaceship_v1, remove_spaceship_v2, remove_spaceship_medium, remove_spaceship_medium_v2,  
+      remove_spaceship_medium_v3, remove_spaceship_medium_v4, remove_spaceship_small, remove_spaceship_small_v2, 
+      remove_spaceship_small_v3, remove_spaceship_small_v4, remove_spaceship_small_v5, remove_spaceship_small_v6, remove_spaceship_small_v7, remove_spaceship_small_v8;
+logic visible_meteor, visible_meteor_v2, visible_meteor_medium, visible_meteor_medium_v2, visible_meteor_medium_v3, visible_meteor_medium_v4,
+      visible_meteor_small, visible_meteor_small_v2, visible_meteor_small_v3, visible_meteor_small_v4, visible_meteor_small_v5, visible_meteor_small_v6,
+      visible_meteor_small_v7, visible_meteor_small_v8;
 logic blinking;
-logic collision, collision_v2, collision_medium, collision_medium_v2, collision_small, collision_small_v2;
+logic collision, collision_v2, collision_medium, collision_medium_v2, collision_medium_v3, collision_medium_v4, collision_small, collision_small_v2, 
+      collision_small_v3, collision_small_v4, collision_small_v5, collision_small_v6, collision_small_v7, collision_small_v8;
 //lifes
 logic [11:0] lifes_rgb;
 logic [10:0] lifes_addr;
-logic lost_life;
+logic lost_life, end_lifes;
 //points
-logic [1:0] points, points_v2, points_medium, points_medium_v2, points_small, points_small_v2;
+logic [1:0] points, points_v2, points_medium, points_medium_v2, points_medium_v3, points_medium_v4, points_small, points_small_v2, 
+      points_small_v3, points_small_v4, points_small_v5, points_small_v6, points_small_v7, points_small_v8;
 logic [5:0] total_points;
 //timer
 logic [5:0] seconds, minutes;
@@ -109,8 +154,16 @@ vga_if draw_meteor_if();
 vga_if draw_meteor_v2_if();
 vga_if draw_medium_meteor_if();
 vga_if draw_medium_meteor_v2_if();
+vga_if draw_medium_meteor_v3_if();
+vga_if draw_medium_meteor_v4_if();
 vga_if draw_small_meteor_if();
 vga_if draw_small_meteor_v2_if();
+vga_if draw_small_meteor_v3_if();
+vga_if draw_small_meteor_v4_if();
+vga_if draw_small_meteor_v5_if();
+vga_if draw_small_meteor_v6_if();
+vga_if draw_small_meteor_v7_if();
+vga_if draw_small_meteor_v8_if();
 vga_if draw_logo_if();
 vga_if draw_lifes_if();
 vga_if draw_points_if();
@@ -151,7 +204,7 @@ assign {r,g,b} = draw_mouse_if.rgb[11:0];
 
 vga_timing u_vga_timing (
     .clk65MHz(clk65MHz),
-    .rst,
+    .rst(rst),
     .tout(timing_if)
 );
 
@@ -159,44 +212,18 @@ vga_timing u_vga_timing (
 
 draw_bg u_draw_bg (
     .clk65MHz(clk65MHz),
-    .rst,
+    .rst(rst),
     .rom_rgb(rom_rgb),
     .rom_addr(rom_addr),
 
     .bgin(timing_if),
     .out(draw_bg_if)
-
 );
 
 image_bg u_image_bg (
     .clk(clk65MHz),
     .address(rom_addr),
     .rgb(rom_rgb)
-);
-
-//----------LIFES------------------
-
-assign lost_life = collision || collision_v2 || collision_medium || collision_medium_v2 || collision_small || collision_small_v2;
-
-draw_lifes u_draw_lifes (
-    .clk65MHz(clk65MHz),
-    .rst,
-    .enable(active_shoot),
-    .lost_life(lost_life),
-    .endgame(),
-
-    .in(draw_small_meteor_v2_if),
-    .out(draw_lifes_if),
-
-    .lifes_rgb(lifes_rgb),
-    .lifes_addr(lifes_addr)
-);
-
-image_lifes u_image_lifes (
-    .clk(clk65MHz),
-
-    .rgb(lifes_rgb),
-    .address(lifes_addr)
 );
 
 //---------LOGO------------------------------------
@@ -227,7 +254,6 @@ draw_string u_draw_title (
     .value(2'b0), // not used
     .in(draw_logo_if),
     .out(draw_title_if)
-
 );
 
 draw_string
@@ -247,7 +273,6 @@ draw_string
     .value(2'b0), // not used
     .in(draw_title_if),
     .out(draw_string_if)
-
 );
 
 toggle u_toggle_string (
@@ -255,7 +280,6 @@ toggle u_toggle_string (
     .rst(rst | reset_game),
     .toggle(string_toggle)
 );
-
 
 //----------SPACESHIP-----------------------------------------
 
@@ -273,20 +297,43 @@ draw_spaceship u_draw_spaceship (
     .endgame(endgame),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
-    .active_shoot,
-    .blinking,
+    .active_shoot(active_shoot),
+    .blinking(blinking),
 
-    .rgb_pixel,
-    .pixel_addr
-
+    .rgb_pixel(rgb_pixel),
+    .pixel_addr(pixel_addr)
 );
 
 image_ship u_image_ship (
     .clk(clk65MHz),
-
     .rgb(rgb_pixel),
     .address(pixel_addr)
 
+);
+
+//----------LIFES------------------
+
+assign lost_life = collision || collision_v2 || collision_medium || collision_medium_v2  || collision_medium_v3 || collision_medium_v4 || collision_small || collision_small_v2 
+    || collision_small_v3 || collision_small_v4 || collision_small_v5 || collision_small_v6 || collision_small_v7 || collision_small_v8;;
+
+draw_lifes u_draw_lifes (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+    .enable(active_shoot),
+    .lost_life(lost_life),
+    .endgame(end_lifes),
+
+    .in(draw_small_meteor_v8_if),
+    .out(draw_lifes_if),
+
+    .lifes_rgb(lifes_rgb),
+    .lifes_addr(lifes_addr)
+);
+
+image_lifes u_image_lifes (
+    .clk(clk65MHz),
+    .rgb(lifes_rgb),
+    .address(lifes_addr)
 );
 
 //--------COLLISION-------------------------------------------------
@@ -294,14 +341,12 @@ image_ship u_image_ship (
 collision u_collision (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
     .meteor_interactive(visible_meteor),
     .spaceship_blinking(blinking),
-
     .collision(collision),
     .remove_spaceship(remove_spaceship_v1)
 );
@@ -309,14 +354,12 @@ collision u_collision (
 collision u_collision_v2 (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_v2),
     .meteor_y(meteor_y_v2),
     .meteor_interactive(visible_meteor_v2),
     .spaceship_blinking(blinking),
-
     .collision(collision_v2),
     .remove_spaceship(remove_spaceship_v2)
 );
@@ -328,14 +371,12 @@ collision
 ) u_medium_collision (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium),
     .meteor_y(meteor_y_medium),
     .meteor_interactive(visible_meteor_medium),
     .spaceship_blinking(blinking),
-
     .collision(collision_medium),
     .remove_spaceship(remove_spaceship_medium)
 );
@@ -347,16 +388,48 @@ collision
 ) u_medium_collision_v2 (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium_v2),
     .meteor_y(meteor_y_medium_v2),
     .meteor_interactive(visible_meteor_medium_v2),
     .spaceship_blinking(blinking),
-
     .collision(collision_medium_v2),
     .remove_spaceship(remove_spaceship_medium_v2)
+);
+
+collision 
+#(
+    .METEOR_W(120),
+    .METEOR_H(120)
+) u_medium_collision_v3 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_medium_v3),
+    .meteor_y(meteor_y_medium_v3),
+    .meteor_interactive(visible_meteor_medium_v3),
+    .spaceship_blinking(blinking),
+    .collision(collision_medium_v3),
+    .remove_spaceship(remove_spaceship_medium_v3)
+);
+
+collision 
+#(
+    .METEOR_W(120),
+    .METEOR_H(120)
+) u_medium_collision_v4 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_medium_v4),
+    .meteor_y(meteor_y_medium_v4),
+    .meteor_interactive(visible_meteor_medium_v4),
+    .spaceship_blinking(blinking),
+    .collision(collision_medium_v4),
+    .remove_spaceship(remove_spaceship_medium_v4)
 );
 
 collision 
@@ -366,14 +439,12 @@ collision
 )u_small_collision (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small),
     .meteor_y(meteor_y_small),
     .meteor_interactive(visible_meteor_small),
     .spaceship_blinking(blinking),
-
     .collision(collision_small),
     .remove_spaceship(remove_spaceship_small)
 );
@@ -385,20 +456,121 @@ collision
 ) u_small_collision_v2 (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v2),
     .meteor_y(meteor_y_small_v2),
     .meteor_interactive(visible_meteor_small_v2),
     .spaceship_blinking(blinking),
-
     .collision(collision_small_v2),
     .remove_spaceship(remove_spaceship_small_v2)
 );
 
-assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2 | remove_spaceship_medium | remove_spaceship_medium_v2
-    | remove_spaceship_small | remove_spaceship_small_v2;
+collision 
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_small_collision_v3 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_small_v3),
+    .meteor_y(meteor_y_small_v3),
+    .meteor_interactive(visible_meteor_small_v3),
+    .spaceship_blinking(blinking),
+    .collision(collision_small_v3),
+    .remove_spaceship(remove_spaceship_small_v3)
+);
+
+collision 
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_small_collision_v4 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_small_v4),
+    .meteor_y(meteor_y_small_v4),
+    .meteor_interactive(visible_meteor_small_v4),
+    .spaceship_blinking(blinking),
+    .collision(collision_small_v4),
+    .remove_spaceship(remove_spaceship_small_v4)
+);
+
+collision 
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_small_collision_v5 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_small_v5),
+    .meteor_y(meteor_y_small_v5),
+    .meteor_interactive(visible_meteor_small_v5),
+    .spaceship_blinking(blinking),
+    .collision(collision_small_v5),
+    .remove_spaceship(remove_spaceship_small_v5)
+);
+
+collision 
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_small_collision_v6 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_small_v6),
+    .meteor_y(meteor_y_small_v6),
+    .meteor_interactive(visible_meteor_small_v6),
+    .spaceship_blinking(blinking),
+    .collision(collision_small_v6),
+    .remove_spaceship(remove_spaceship_small_v6)
+);
+
+collision 
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_small_collision_v7 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_small_v7),
+    .meteor_y(meteor_y_small_v7),
+    .meteor_interactive(visible_meteor_small_v7),
+    .spaceship_blinking(blinking),
+    .collision(collision_small_v7),
+    .remove_spaceship(remove_spaceship_small_v7)
+);
+
+collision 
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_small_collision_v8 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .spaceship_x(spaceship_x),
+    .spaceship_y(spaceship_y),
+    .meteor_x(meteor_x_small_v8),
+    .meteor_y(meteor_y_small_v8),
+    .meteor_interactive(visible_meteor_small_v8),
+    .spaceship_blinking(blinking),
+    .collision(collision_small_v8),
+    .remove_spaceship(remove_spaceship_small_v8)
+);
+
+assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2 | remove_spaceship_medium | remove_spaceship_medium_v2 | remove_spaceship_medium_v3 | remove_spaceship_medium_v4
+    | remove_spaceship_small | remove_spaceship_small_v2 | remove_spaceship_small_v3 | remove_spaceship_small_v4 
+    | remove_spaceship_small_v5 | remove_spaceship_small_v6 | remove_spaceship_small_v7 | remove_spaceship_small_v8;;
 
 //-------HIT METEORITE---------------------------------------------------
 
@@ -411,8 +583,6 @@ hit_meteor u_hit_meteor (
     .meteor_y(meteor_y),
     .meteor_interactive(visible_meteor),
     .bullet_visible(bullet_visible),
-
-    .hit(),
     .remove_bullet(remove_bullet_v1),
     .remove_meteor(remove_meteor)
 );
@@ -426,8 +596,6 @@ hit_meteor u_hit_meteor_v2 (
     .meteor_y(meteor_y_v2),
     .meteor_interactive(visible_meteor_v2),
     .bullet_visible(bullet_visible),
-
-    .hit(),
     .remove_bullet(remove_bullet_v2),
     .remove_meteor(remove_meteor_v2)
 );
@@ -445,8 +613,6 @@ hit_meteor
     .meteor_y(meteor_y_medium),
     .meteor_interactive(visible_meteor_medium),
     .bullet_visible(bullet_visible),
-
-    .hit(),
     .remove_bullet(remove_bullet_medium),
     .remove_meteor(remove_meteor_medium)
 );
@@ -464,10 +630,42 @@ hit_meteor
     .meteor_y(meteor_y_medium_v2),
     .meteor_interactive(visible_meteor_medium_v2),
     .bullet_visible(bullet_visible),
-
-    .hit(),
     .remove_bullet(remove_bullet_medium_v2),
     .remove_meteor(remove_meteor_medium_v2)
+);
+
+hit_meteor
+#(
+    .METEOR_W(120),
+    .METEOR_H(120)
+) u_hit_medium_meteor_v3 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_medium_v3),
+    .meteor_y(meteor_y_medium_v3),
+    .meteor_interactive(visible_meteor_medium_v3),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_medium_v3),
+    .remove_meteor(remove_meteor_medium_v3)
+);
+
+hit_meteor
+#(
+    .METEOR_W(120),
+    .METEOR_H(120)
+) u_hit_medium_meteor_v4 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_medium_v4),
+    .meteor_y(meteor_y_medium_v4),
+    .meteor_interactive(visible_meteor_medium_v4),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_medium_v4),
+    .remove_meteor(remove_meteor_medium_v4)
 );
 
 hit_meteor
@@ -483,8 +681,6 @@ hit_meteor
     .meteor_y(meteor_y_small),
     .meteor_interactive(visible_meteor_small),
     .bullet_visible(bullet_visible),
-
-    .hit(),
     .remove_bullet(remove_bullet_small),
     .remove_meteor(remove_meteor_small)
 );
@@ -502,14 +698,115 @@ hit_meteor
     .meteor_y(meteor_y_small_v2),
     .meteor_interactive(visible_meteor_small_v2),
     .bullet_visible(bullet_visible),
-
-    .hit(),
     .remove_bullet(remove_bullet_small_v2),
     .remove_meteor(remove_meteor_small_v2)
 );
 
-assign remove_bullet = remove_bullet_v1 | remove_bullet_v2 | remove_bullet_medium | remove_bullet_medium_v2
-    | remove_bullet_small | remove_bullet_small_v2;
+hit_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_hit_small_meteor_v3 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_small_v3),
+    .meteor_y(meteor_y_small_v3),
+    .meteor_interactive(visible_meteor_small_v3),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_small_v3),
+    .remove_meteor(remove_meteor_small_v3)
+);
+
+hit_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_hit_small_meteor_v4 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_small_v4),
+    .meteor_y(meteor_y_small_v4),
+    .meteor_interactive(visible_meteor_small_v4),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_small_v4),
+    .remove_meteor(remove_meteor_small_v4)
+);
+
+hit_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_hit_small_meteor_v5 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_small_v5),
+    .meteor_y(meteor_y_small_v5),
+    .meteor_interactive(visible_meteor_small_v5),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_small_v5),
+    .remove_meteor(remove_meteor_small_v5)
+);
+
+hit_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_hit_small_meteor_v6 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_small_v6),
+    .meteor_y(meteor_y_small_v6),
+    .meteor_interactive(visible_meteor_small_v6),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_small_v6),
+    .remove_meteor(remove_meteor_small_v6)
+);
+
+hit_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_hit_small_meteor_v7 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_small_v7),
+    .meteor_y(meteor_y_small_v7),
+    .meteor_interactive(visible_meteor_small_v7),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_small_v7),
+    .remove_meteor(remove_meteor_small_v7)
+);
+
+hit_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64)
+) u_hit_small_meteor_v8 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .bullet_x(bullet_x),
+    .bullet_y(bullet_y),
+    .meteor_x(meteor_x_small_v8),
+    .meteor_y(meteor_y_small_v8),
+    .meteor_interactive(visible_meteor_small_v8),
+    .bullet_visible(bullet_visible),
+    .remove_bullet(remove_bullet_small_v8),
+    .remove_meteor(remove_meteor_small_v8)
+);
+
+assign remove_bullet = remove_bullet_v1 | remove_bullet_v2 | remove_bullet_medium | remove_bullet_medium_v2 | remove_bullet_medium_v3 | remove_bullet_medium_v4
+    | remove_bullet_small | remove_bullet_small_v2 | remove_bullet_small_v3 | remove_bullet_small_v4 
+    | remove_bullet_small_v5 | remove_bullet_small_v6 | remove_bullet_small_v7 | remove_bullet_small_v8;
 
 //----------BULLET-------------------------------------------------------
 draw_bullet u_draw_bullet (
@@ -523,17 +820,14 @@ draw_bullet u_draw_bullet (
     .spaceship_y(bullet_y),
     .visible(bullet_visible),
 
-    .rgb_bullet,
-    .bullet_addr
-
+    .rgb_bullet(rgb_bullet),
+    .bullet_addr(bullet_addr)
 );
 
 image_bullet u_image_bullet (
     .clk(clk65MHz),
-
     .rgb(rgb_bullet),
     .address(bullet_addr)
-
 );
 
 //-------------SHOOTING-----------------------------------------------------
@@ -562,21 +856,20 @@ draw_meteor u_draw_meteor (
     .active_shoot(active_shoot),
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
-    .remove(remove_meteor),
+    .remove(remove_meteor | endgame),
     .ext_start_x(12'd0),
     .ext_start_y(12'd0),
     .use_external_start(1'b0),
     .enable(1'b1),
-    .start_x,
-    .start_y,
+    .start_x(start_x),
+    .start_y(start_y),
     .start_meteor,
     .visible(visible_meteor),
     .meteor_gone,
     .points(points),
 
-    .rgb_meteor,
-    .meteor_addr
-
+    .rgb_meteor(rgb_meteor),
+    .meteor_addr(meteor_addr)
 );
 
 prog_meteor u_prog_meteor (
@@ -586,7 +879,7 @@ prog_meteor u_prog_meteor (
     .start_x(start_x),
     .start_y(start_y),
     .direction_condition(toggle),
-    .enable(visible_meteor),
+    .enable(visible_meteor | endgame),
     .meteor_x,
     .meteor_y
 );
@@ -607,7 +900,6 @@ draw_meteor
     .DELAY_BITS(2),
     .ADDR(11),
     .POINTS(2),
-    .IMG_HEIGHT(64),
     .IMG_WIDTH(64)
 ) u_draw_medium_meteor (
     .clk65MHz(clk65MHz),
@@ -619,7 +911,7 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_medium),
     .meteor_y(meteor_y_medium),
-    .remove(remove_meteor_medium),
+    .remove(remove_meteor_medium | endgame),
     .ext_start_x(start_x),
     .ext_start_y(start_y),
     .use_external_start(meteor_gone),
@@ -633,7 +925,6 @@ draw_meteor
 
     .rgb_meteor(rgb_meteor_medium),
     .meteor_addr(meteor_addr_medium)
-
 );
 
 prog_meteor
@@ -649,7 +940,7 @@ prog_meteor
     .start_x(start_x_medium),
     .start_y(start_y_medium),
     .direction_condition(toggle),
-    .enable(visible_meteor_medium),
+    .enable(visible_meteor_medium | endgame),
     .meteor_x(meteor_x_medium),
     .meteor_y(meteor_y_medium)
 );
@@ -670,19 +961,18 @@ draw_meteor
     .DELAY_BITS(2),
     .ADDR(9),
     .POINTS(3),
-    .IMG_HEIGHT(32),
     .IMG_WIDTH(32)
 ) u_draw_small_meteor (
     .clk65MHz(clk65MHz),
     .rst(rst | reset_game),
 
-    .in(draw_medium_meteor_v2_if),
+    .in(draw_medium_meteor_v4_if),
     .out(draw_small_meteor_if),
 
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small),
     .meteor_y(meteor_y_small),
-    .remove(remove_meteor_small),
+    .remove(remove_meteor_small | endgame),
     .ext_start_x(start_x_medium),
     .ext_start_y(start_y_medium),
     .use_external_start(meteor_gone_medium),
@@ -696,7 +986,6 @@ draw_meteor
 
     .rgb_meteor(rgb_meteor_small),
     .meteor_addr(meteor_addr_small)
-
 );
 
 prog_meteor
@@ -712,7 +1001,7 @@ prog_meteor
     .start_x(start_x_small),
     .start_y(start_y_small),
     .direction_condition(toggle),
-    .enable(visible_meteor_small),
+    .enable(visible_meteor_small | endgame),
     .meteor_x(meteor_x_small),
     .meteor_y(meteor_y_small)
 );
@@ -733,7 +1022,6 @@ draw_meteor
     .DELAY_BITS(2),
     .ADDR(9),
     .POINTS(3),
-    .IMG_HEIGHT(32),
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v2 (
     .clk65MHz(clk65MHz),
@@ -745,7 +1033,7 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v2),
     .meteor_y(meteor_y_small_v2),
-    .remove(remove_meteor_small_v2),
+    .remove(remove_meteor_small_v2 | endgame),
     .ext_start_x(start_x_medium),
     .ext_start_y(start_y_medium),
     .use_external_start(meteor_gone_medium),
@@ -759,7 +1047,6 @@ draw_meteor
 
     .rgb_meteor(rgb_meteor_small_v2),
     .meteor_addr(meteor_addr_small_v2)
-
 );
 
 prog_meteor
@@ -775,7 +1062,7 @@ prog_meteor
     .start_x(start_x_small_v2),
     .start_y(start_y_small_v2),
     .direction_condition(toggle),
-    .enable(visible_meteor_small_v2),
+    .enable(visible_meteor_small_v2 | endgame),
     .meteor_x(meteor_x_small_v2),
     .meteor_y(meteor_y_small_v2)
 );
@@ -796,8 +1083,7 @@ draw_meteor
     .DELAY_BITS(2),
     .ADDR(11),
     .POINTS(2),
-    .IMG_WIDTH(64),
-    .IMG_HEIGHT(64)
+    .IMG_WIDTH(64)
 ) u_draw_medium_meteor_v2 (
     .clk65MHz(clk65MHz),
     .rst(rst | reset_game),
@@ -808,7 +1094,7 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_medium_v2),
     .meteor_y(meteor_y_medium_v2),
-    .remove(remove_meteor_medium_v2),
+    .remove(remove_meteor_medium_v2 | endgame),
     .ext_start_x(start_x),
     .ext_start_y(start_y),
     .use_external_start(meteor_gone),
@@ -822,7 +1108,6 @@ draw_meteor
 
     .rgb_meteor(rgb_meteor_medium_v2),
     .meteor_addr(meteor_addr_medium_v2)
-
 );
 
 prog_meteor
@@ -838,7 +1123,7 @@ prog_meteor
     .start_x(start_x_medium_v2),
     .start_y(start_y_medium_v2),
     .direction_condition(toggle),
-    .enable(visible_meteor_medium_v2),
+    .enable(visible_meteor_medium_v2 | endgame),
     .meteor_x(meteor_x_medium_v2),
     .meteor_y(meteor_y_medium_v2)
 );
@@ -849,11 +1134,134 @@ image_medium_meteor u_image_medium_meteor_v2 (
     .address(meteor_addr_medium_v2)
 );
 
+//------SMALL_METEORITE_3------------
+
+draw_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_WIDTH(32)
+) u_draw_small_meteor_v3 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_small_meteor_v2_if),
+    .out(draw_small_meteor_v3_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_small_v3),
+    .meteor_y(meteor_y_small_v3),
+    .remove(remove_meteor_small_v3 | endgame),
+    .ext_start_x(start_x_medium_v2),
+    .ext_start_y(start_y_medium_v2),
+    .use_external_start(meteor_gone_medium_v2),
+    .enable(meteor_gone_medium_v2),
+    .start_x(start_x_small_v3),
+    .start_y(start_y_small_v3),
+    .start_meteor(start_small_v3),
+    .visible(visible_meteor_small_v3),
+    .meteor_gone(meteor_gone_small_v3),
+    .points(points_small_v3),
+
+    .rgb_meteor(rgb_meteor_small_v3),
+    .meteor_addr(meteor_addr_small_v3)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(2000),
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DIRECTION(0)
+) u_prog_small_meteor_v3 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_small_v3),
+    .start_x(start_x_small_v3),
+    .start_y(start_y_small_v3),
+    .direction_condition(toggle),
+    .enable(visible_meteor_small_v3 | endgame),
+    .meteor_x(meteor_x_small_v3),
+    .meteor_y(meteor_y_small_v3)
+);
+
+image_small_meteor u_image_small_meteor_v3 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_small_v3),
+    .address(meteor_addr_small_v3)
+);
+
+//------SMALL_METEORITE_2------------
+
+draw_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_WIDTH(32)
+) u_draw_small_meteor_v4 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_small_meteor_v3_if),
+    .out(draw_small_meteor_v4_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_small_v4),
+    .meteor_y(meteor_y_small_v4),
+    .remove(remove_meteor_small_v4 | endgame),
+    .ext_start_x(start_x_medium_v2),
+    .ext_start_y(start_y_medium_v2),
+    .use_external_start(meteor_gone_medium_v2),
+    .enable(meteor_gone_medium_v2),
+    .start_x(start_x_small_v4),
+    .start_y(start_y_small_v4),
+    .start_meteor(start_small_v4),
+    .visible(visible_meteor_small_v4),
+    .meteor_gone(meteor_gone_small_v4),
+    .points(points_small_v4),
+
+    .rgb_meteor(rgb_meteor_small_v4),
+    .meteor_addr(meteor_addr_small_v4)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(2000),
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DIRECTION(1)
+) u_prog_small_meteor_v4 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_small_v4),
+    .start_x(start_x_small_v4),
+    .start_y(start_y_small_v4),
+    .direction_condition(toggle),
+    .enable(visible_meteor_small_v4 | endgame),
+    .meteor_x(meteor_x_small_v4),
+    .meteor_y(meteor_y_small_v4)
+);
+
+image_small_meteor u_image_small_meteor_v4 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_small_v4),
+    .address(meteor_addr_small_v4)
+);
+
+
 //----------METEORITE_2----------------------------------------------
 
 draw_meteor
 #(
-    .DELAY(138_500_000), // 2.125s
+    .DELAY(151_000_000), 
     .DELAY_BITS(28)
 ) u_draw_meteor_v2 (
     .clk65MHz(clk65MHz),
@@ -865,7 +1273,7 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_v2),
     .meteor_y(meteor_y_v2),
-    .remove(remove_meteor_v2),
+    .remove(remove_meteor_v2 | endgame),
     .ext_start_x(12'd0),
     .ext_start_y(12'd0),
     .use_external_start(1'b0),
@@ -879,7 +1287,6 @@ draw_meteor
 
     .rgb_meteor(rgb_meteor_v2),
     .meteor_addr(meteor_addr_v2)
-
 );
 
 prog_meteor u_prog_meteor_v2 (
@@ -889,7 +1296,7 @@ prog_meteor u_prog_meteor_v2 (
     .start_x(start_x_v2),
     .start_y(start_y_v2),
     .direction_condition(toggle),
-    .enable(visible_meteor_v2),
+    .enable(visible_meteor_v2 | endgame),
     .meteor_x(meteor_x_v2),
     .meteor_y(meteor_y_v2)
 );
@@ -900,8 +1307,375 @@ image_meteor u_image_meteor_v2 (
     .address(meteor_addr_v2)
 );
 
+//------MEDIUM_METEORITE_3------------
 
-assign endgame = meteor_gone_small && meteor_gone_small_v2;
+draw_meteor
+#(
+    .METEOR_W(120),
+    .METEOR_H(120),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(11),
+    .POINTS(2),
+    .IMG_WIDTH(64)
+) u_draw_medium_meteor_v3 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_medium_meteor_v2_if),
+    .out(draw_medium_meteor_v3_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_medium_v3),
+    .meteor_y(meteor_y_medium_v3),
+    .remove(remove_meteor_medium_v3 | endgame),
+    .ext_start_x(start_x_v2),
+    .ext_start_y(start_y_v2),
+    .use_external_start(meteor_gone_v2),
+    .enable(meteor_gone_v2),
+    .start_x(start_x_medium_v3),
+    .start_y(start_y_medium_v3),
+    .start_meteor(start_medium_v3),
+    .visible(visible_meteor_medium_v3),
+    .meteor_gone(meteor_gone_medium_v3),
+    .points(points_medium_v3),
+
+    .rgb_meteor(rgb_meteor_medium_v3),
+    .meteor_addr(meteor_addr_medium_v3)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(1700),
+    .METEOR_W(120),
+    .METEOR_H(120),
+    .DIRECTION(0)
+) u_prog_medium_meteor_v3 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_medium_v3),
+    .start_x(start_x_medium_v3),
+    .start_y(start_y_medium_v3),
+    .direction_condition(toggle),
+    .enable(visible_meteor_medium_v3 | endgame),
+    .meteor_x(meteor_x_medium_v3),
+    .meteor_y(meteor_y_medium_v3)
+);
+
+image_medium_meteor u_image_medium_meteor_v3 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_medium_v3),
+    .address(meteor_addr_medium_v3)
+);
+
+//------SMALL_METEORITE_5------------
+
+draw_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_WIDTH(32)
+) u_draw_small_meteor_v5 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_small_meteor_v4_if),
+    .out(draw_small_meteor_v5_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_small_v5),
+    .meteor_y(meteor_y_small_v5),
+    .remove(remove_meteor_small_v5 | endgame),
+    .ext_start_x(start_x_medium_v3),
+    .ext_start_y(start_y_medium_v3),
+    .use_external_start(meteor_gone_medium_v3),
+    .enable(meteor_gone_medium_v3),
+    .start_x(start_x_small_v5),
+    .start_y(start_y_small_v5),
+    .start_meteor(start_small_v5),
+    .visible(visible_meteor_small_v5),
+    .meteor_gone(meteor_gone_small_v5),
+    .points(points_small_v5),
+
+    .rgb_meteor(rgb_meteor_small_v5),
+    .meteor_addr(meteor_addr_small_v5)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(2000),
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DIRECTION(0)
+) u_prog_small_meteor_v5 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_small_v5),
+    .start_x(start_x_small_v5),
+    .start_y(start_y_small_v5),
+    .direction_condition(toggle),
+    .enable(visible_meteor_small_v5 | endgame),
+    .meteor_x(meteor_x_small_v5),
+    .meteor_y(meteor_y_small_v5)
+);
+
+image_small_meteor u_image_small_meteor_v5 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_small_v5),
+    .address(meteor_addr_small_v5)
+);
+
+//------SMALL_METEORITE_6------------
+
+draw_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_WIDTH(32)
+) u_draw_small_meteor_v6 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_small_meteor_v5_if),
+    .out(draw_small_meteor_v6_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_small_v6),
+    .meteor_y(meteor_y_small_v6),
+    .remove(remove_meteor_small_v6 | endgame),
+    .ext_start_x(start_x_medium_v3),
+    .ext_start_y(start_y_medium_v3),
+    .use_external_start(meteor_gone_medium_v3),
+    .enable(meteor_gone_medium_v3),
+    .start_x(start_x_small_v6),
+    .start_y(start_y_small_v6),
+    .start_meteor(start_small_v6),
+    .visible(visible_meteor_small_v6),
+    .meteor_gone(meteor_gone_small_v6),
+    .points(points_small_v6),
+
+    .rgb_meteor(rgb_meteor_small_v6),
+    .meteor_addr(meteor_addr_small_v6)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(2000),
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DIRECTION(1)
+) u_prog_small_meteor_v6 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_small_v6),
+    .start_x(start_x_small_v6),
+    .start_y(start_y_small_v6),
+    .direction_condition(toggle),
+    .enable(visible_meteor_small_v6 | endgame),
+    .meteor_x(meteor_x_small_v6),
+    .meteor_y(meteor_y_small_v6)
+);
+
+image_small_meteor u_image_small_meteor_v6 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_small_v6),
+    .address(meteor_addr_small_v6)
+);
+
+//------MEDIUM_METEORITE_4------------
+
+draw_meteor
+#(
+    .METEOR_W(120),
+    .METEOR_H(120),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(11),
+    .POINTS(2),
+    .IMG_WIDTH(64)
+) u_draw_medium_meteor_v4 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_medium_meteor_v3_if),
+    .out(draw_medium_meteor_v4_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_medium_v4),
+    .meteor_y(meteor_y_medium_v4),
+    .remove(remove_meteor_medium_v4 | endgame),
+    .ext_start_x(start_x_v2),
+    .ext_start_y(start_y_v2),
+    .use_external_start(meteor_gone_v2),
+    .enable(meteor_gone_v2),
+    .start_x(start_x_medium_v4),
+    .start_y(start_y_medium_v4),
+    .start_meteor(start_medium_v4),
+    .visible(visible_meteor_medium_v4),
+    .meteor_gone(meteor_gone_medium_v4),
+    .points(points_medium_v4),
+
+    .rgb_meteor(rgb_meteor_medium_v4),
+    .meteor_addr(meteor_addr_medium_v4)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(1700),
+    .METEOR_W(120),
+    .METEOR_H(120),
+    .DIRECTION(1)
+) u_prog_medium_meteor_v4 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_medium_v4),
+    .start_x(start_x_medium_v4),
+    .start_y(start_y_medium_v4),
+    .direction_condition(toggle),
+    .enable(visible_meteor_medium_v4 | endgame),
+    .meteor_x(meteor_x_medium_v4),
+    .meteor_y(meteor_y_medium_v4)
+);
+
+image_medium_meteor u_image_medium_meteor_v4 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_medium_v4),
+    .address(meteor_addr_medium_v4)
+);
+
+//------SMALL_METEORITE_7------------
+
+draw_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_WIDTH(32)
+) u_draw_small_meteor_v7 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_small_meteor_v6_if),
+    .out(draw_small_meteor_v7_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_small_v7),
+    .meteor_y(meteor_y_small_v7),
+    .remove(remove_meteor_small_v7 | endgame),
+    .ext_start_x(start_x_medium_v4),
+    .ext_start_y(start_y_medium_v4),
+    .use_external_start(meteor_gone_medium_v4),
+    .enable(meteor_gone_medium_v4),
+    .start_x(start_x_small_v7),
+    .start_y(start_y_small_v7),
+    .start_meteor(start_small_v7),
+    .visible(visible_meteor_small_v7),
+    .meteor_gone(meteor_gone_small_v7),
+    .points(points_small_v7),
+
+    .rgb_meteor(rgb_meteor_small_v7),
+    .meteor_addr(meteor_addr_small_v7)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(2000),
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DIRECTION(0)
+) u_prog_small_meteor_v7 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_small_v7),
+    .start_x(start_x_small_v7),
+    .start_y(start_y_small_v7),
+    .direction_condition(toggle),
+    .enable(visible_meteor_small_v7 | endgame),
+    .meteor_x(meteor_x_small_v7),
+    .meteor_y(meteor_y_small_v7)
+);
+
+image_small_meteor u_image_small_meteor_v7 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_small_v7),
+    .address(meteor_addr_small_v7)
+);
+
+//------SMALL_METEORITE_8------------
+
+draw_meteor
+#(
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DELAY(1),
+    .DELAY_BITS(2),
+    .ADDR(9),
+    .POINTS(3),
+    .IMG_WIDTH(32)
+) u_draw_small_meteor_v8 (
+    .clk65MHz(clk65MHz),
+    .rst(rst | reset_game),
+
+    .in(draw_small_meteor_v7_if),
+    .out(draw_small_meteor_v8_if),
+
+    .active_shoot(active_shoot),
+    .meteor_x(meteor_x_small_v8),
+    .meteor_y(meteor_y_small_v8),
+    .remove(remove_meteor_small_v8 | endgame),
+    .ext_start_x(start_x_medium_v4),
+    .ext_start_y(start_y_medium_v4),
+    .use_external_start(meteor_gone_medium_v4),
+    .enable(meteor_gone_medium_v4),
+    .start_x(start_x_small_v8),
+    .start_y(start_y_small_v8),
+    .start_meteor(start_small_v8),
+    .visible(visible_meteor_small_v8),
+    .meteor_gone(meteor_gone_small_v8),
+    .points(points_small_v8),
+
+    .rgb_meteor(rgb_meteor_small_v8),
+    .meteor_addr(meteor_addr_small_v8)
+);
+
+prog_meteor
+#(
+    .METEOR_SPEED(2000),
+    .METEOR_W(64),
+    .METEOR_H(64),
+    .DIRECTION(1)
+) u_prog_small_meteor_v8 (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .start(start_small_v8),
+    .start_x(start_x_small_v8),
+    .start_y(start_y_small_v8),
+    .direction_condition(toggle),
+    .enable(visible_meteor_small_v8 | endgame),
+    .meteor_x(meteor_x_small_v8),
+    .meteor_y(meteor_y_small_v8)
+);
+
+image_small_meteor u_image_small_meteor_v8 (
+    .clk(clk65MHz),
+    .rgb(rgb_meteor_small_v8),
+    .address(meteor_addr_small_v8)
+);
+
+assign endgame = (meteor_gone && meteor_gone_v2 && meteor_gone_medium && meteor_gone_medium_v2 && meteor_gone_medium_v3
+                && meteor_gone_medium_v4 && meteor_gone_small && meteor_gone_small_v2 && meteor_gone_small_v3 && meteor_gone_small_v4 
+                && meteor_gone_small_v5 && meteor_gone_small_v6 && meteor_gone_small_v7 && meteor_gone_small_v8) || end_lifes;
 
 //----------TOGGLE----------------
 
@@ -909,13 +1683,14 @@ toggle #(
     .TOGGLE_MAX(650_000 - 1) //0.01s
 ) u_toggle_meteor (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .toggle
 );
 
 //--------POINTS--------------------------------------------
 
-assign total_points = points + points_v2 + points_medium + points_medium_v2 + points_small + points_small_v2;
+assign total_points = points + points_v2 + points_medium + points_medium_v2 + points_medium_v3 + points_medium_v4 + points_small + points_small_v2 
+                     + points_small_v3 + points_small_v4 + points_small_v5 + points_small_v6 + points_small_v7 + points_small_v8;
 
 draw_string
 #(
@@ -931,9 +1706,8 @@ draw_string
     .rst(rst | reset_game),
     .enable(active_shoot && !endgame),
     .value(2'b0), // not used
-    .in(draw_small_meteor_v2_if),
+    .in(draw_lifes_if),
     .out(draw_score_if)
-
 );
 
 draw_string
@@ -950,12 +1724,10 @@ draw_string
 ) u_draw_points (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-
     .enable(active_shoot && !endgame),
     .value(total_points[5:0]),
     .in(draw_score_if),
     .out(draw_points_if)
-
 );
 
 //--------TIMER--------------------------------------------
@@ -986,7 +1758,6 @@ draw_string
     .value(minutes[5:0]),
     .in(draw_colon_if),
     .out(draw_minutes_if)
-
 );
 
 draw_string
@@ -1005,7 +1776,6 @@ draw_string
     .value(2'b0), // not used
     .in(draw_points_if),
     .out(draw_colon_if)
-
 );
 
 draw_string
@@ -1026,7 +1796,6 @@ draw_string
     .value(seconds[5:0]),
     .in(draw_minutes_if),
     .out(draw_seconds_if)
-
 );
 
 //----------MOUSE--------------------------------------------
@@ -1043,7 +1812,6 @@ draw_mouse u_draw_mouse (
     .left_mouse(left),
     .endgame(endgame),
     .show_cursor()
-
 );
 
 always_ff @(posedge clk65MHz or posedge rst) begin
@@ -1159,7 +1927,6 @@ draw_string
 //     .value(2'b0), // not used
 //     .in(draw_seconds_if),
 //     .out(draw_lose_if)
-
 // );
 
 draw_string
