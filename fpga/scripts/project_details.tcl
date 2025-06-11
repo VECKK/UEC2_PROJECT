@@ -40,6 +40,7 @@ set sv_files {
     ../rtl/Lifes/image_lifes.sv
     ../rtl/Game/timer.sv
     ../rtl/Game/game_reset.sv
+    ../rtl/Game/result.sv
     ../rtl/Logo/draw_logo.sv
     ../rtl/Logo/image_logo.sv
     ../rtl/Background/draw_bg.sv
@@ -58,11 +59,21 @@ set sv_files {
     ../rtl/Meteorite/prog_meteor.sv
     ../rtl/Meteorite/toggle.sv
     ../rtl/Meteorite/random.sv
+    ../rtl/Meteorite/points.sv
     ../rtl/String/char_rom.sv
     ../rtl/String/draw_rect_char.sv
     ../rtl/String/draw_string.sv
     ../rtl/String/font_rom.sv
     ../rtl/Mouse/draw_mouse.sv
+    ../rtl/Uart/fifo.v
+    ../rtl/Uart/mod_m_counter.v
+    ../rtl/Uart/uart_ctl.sv
+    ../rtl/Uart/uart_seconds.sv
+    ../rtl/Uart/uart_minutes.sv
+    ../rtl/Uart/uart_points.sv
+    ../rtl/Uart/uart_rx.v
+    ../rtl/Uart/uart_tx.v
+    ../rtl/Uart/uart.v
     rtl/top_vga_basys3.sv
 }
 

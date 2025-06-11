@@ -1,6 +1,14 @@
 module top_vga (
     input  logic clk65MHz,
     input  logic rst,
+    input  logic rx,
+    input  logic rx_s,
+    input  logic rx_m,
+    input  logic rx_p,
+    output logic tx,
+    output logic tx_s,
+    output logic tx_m,
+    output logic tx_p,
     output logic vs,
     output logic hs,
     output logic [3:0] r,
@@ -141,6 +149,9 @@ logic endgame;
 logic reset_game;
 //mouse
 logic left_latch, prev_left;
+//uart
+logic [5:0] opp_points, opp_minutes, opp_seconds;
+logic opp_first_click, opp_endgame, winner, loser;
 
 
 tbg_if timing_if();
@@ -171,12 +182,12 @@ vga_if draw_minutes_if();
 vga_if draw_colon_if();
 vga_if draw_seconds_if();
 vga_if draw_score_if();
-//vga_if draw_wait_if();
+vga_if draw_wait_if();
 vga_if draw_win_if();
 vga_if draw_you_if();
 vga_if draw_enemy_if();
 vga_if draw_score_v2_if();
-//vga_if draw_lose_if();
+vga_if draw_lose_if();
 vga_if draw_points_you_if();
 vga_if draw_points_enemy_if();
 vga_if draw_time_if();
@@ -292,7 +303,7 @@ draw_spaceship u_draw_spaceship (
 
     .xpos(xpos),
     .ypos(ypos),
-    .left_mouse(left),
+    .left_mouse(first_click_done && opp_first_click),
     .remove(remove_spaceship),
     .endgame(endgame),
     .spaceship_x(spaceship_x),
@@ -856,7 +867,8 @@ draw_meteor u_draw_meteor (
     .active_shoot(active_shoot),
     .meteor_x(meteor_x),
     .meteor_y(meteor_y),
-    .remove(remove_meteor | endgame),
+    .remove(remove_meteor),
+    .endgame(endgame),
     .ext_start_x(12'd0),
     .ext_start_y(12'd0),
     .use_external_start(1'b0),
@@ -911,7 +923,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_medium),
     .meteor_y(meteor_y_medium),
-    .remove(remove_meteor_medium | endgame),
+    .remove(remove_meteor_medium),
+    .endgame(endgame),
     .ext_start_x(start_x),
     .ext_start_y(start_y),
     .use_external_start(meteor_gone),
@@ -972,7 +985,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small),
     .meteor_y(meteor_y_small),
-    .remove(remove_meteor_small | endgame),
+    .remove(remove_meteor_small),
+    .endgame(endgame),
     .ext_start_x(start_x_medium),
     .ext_start_y(start_y_medium),
     .use_external_start(meteor_gone_medium),
@@ -1033,7 +1047,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v2),
     .meteor_y(meteor_y_small_v2),
-    .remove(remove_meteor_small_v2 | endgame),
+    .remove(remove_meteor_small_v2),
+    .endgame(endgame),
     .ext_start_x(start_x_medium),
     .ext_start_y(start_y_medium),
     .use_external_start(meteor_gone_medium),
@@ -1094,7 +1109,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_medium_v2),
     .meteor_y(meteor_y_medium_v2),
-    .remove(remove_meteor_medium_v2 | endgame),
+    .remove(remove_meteor_medium_v2),
+    .endgame(endgame),
     .ext_start_x(start_x),
     .ext_start_y(start_y),
     .use_external_start(meteor_gone),
@@ -1155,7 +1171,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v3),
     .meteor_y(meteor_y_small_v3),
-    .remove(remove_meteor_small_v3 | endgame),
+    .remove(remove_meteor_small_v3),
+    .endgame(endgame),
     .ext_start_x(start_x_medium_v2),
     .ext_start_y(start_y_medium_v2),
     .use_external_start(meteor_gone_medium_v2),
@@ -1216,7 +1233,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v4),
     .meteor_y(meteor_y_small_v4),
-    .remove(remove_meteor_small_v4 | endgame),
+    .remove(remove_meteor_small_v4),
+    .endgame(endgame),
     .ext_start_x(start_x_medium_v2),
     .ext_start_y(start_y_medium_v2),
     .use_external_start(meteor_gone_medium_v2),
@@ -1273,7 +1291,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_v2),
     .meteor_y(meteor_y_v2),
-    .remove(remove_meteor_v2 | endgame),
+    .remove(remove_meteor_v2),
+    .endgame(endgame),
     .ext_start_x(12'd0),
     .ext_start_y(12'd0),
     .use_external_start(1'b0),
@@ -1328,7 +1347,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_medium_v3),
     .meteor_y(meteor_y_medium_v3),
-    .remove(remove_meteor_medium_v3 | endgame),
+    .remove(remove_meteor_medium_v3),
+    .endgame(endgame),
     .ext_start_x(start_x_v2),
     .ext_start_y(start_y_v2),
     .use_external_start(meteor_gone_v2),
@@ -1389,7 +1409,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v5),
     .meteor_y(meteor_y_small_v5),
-    .remove(remove_meteor_small_v5 | endgame),
+    .remove(remove_meteor_small_v5),
+    .endgame(endgame),
     .ext_start_x(start_x_medium_v3),
     .ext_start_y(start_y_medium_v3),
     .use_external_start(meteor_gone_medium_v3),
@@ -1450,7 +1471,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v6),
     .meteor_y(meteor_y_small_v6),
-    .remove(remove_meteor_small_v6 | endgame),
+    .remove(remove_meteor_small_v6),
+    .endgame(endgame),
     .ext_start_x(start_x_medium_v3),
     .ext_start_y(start_y_medium_v3),
     .use_external_start(meteor_gone_medium_v3),
@@ -1511,7 +1533,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_medium_v4),
     .meteor_y(meteor_y_medium_v4),
-    .remove(remove_meteor_medium_v4 | endgame),
+    .remove(remove_meteor_medium_v4),
+    .endgame(endgame),
     .ext_start_x(start_x_v2),
     .ext_start_y(start_y_v2),
     .use_external_start(meteor_gone_v2),
@@ -1572,7 +1595,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v7),
     .meteor_y(meteor_y_small_v7),
-    .remove(remove_meteor_small_v7 | endgame),
+    .remove(remove_meteor_small_v7),
+    .endgame(endgame),
     .ext_start_x(start_x_medium_v4),
     .ext_start_y(start_y_medium_v4),
     .use_external_start(meteor_gone_medium_v4),
@@ -1633,7 +1657,8 @@ draw_meteor
     .active_shoot(active_shoot),
     .meteor_x(meteor_x_small_v8),
     .meteor_y(meteor_y_small_v8),
-    .remove(remove_meteor_small_v8 | endgame),
+    .remove(remove_meteor_small_v8),
+    .endgame(endgame),
     .ext_start_x(start_x_medium_v4),
     .ext_start_y(start_y_medium_v4),
     .use_external_start(meteor_gone_medium_v4),
@@ -1689,8 +1714,26 @@ toggle #(
 
 //--------POINTS--------------------------------------------
 
-assign total_points = points + points_v2 + points_medium + points_medium_v2 + points_medium_v3 + points_medium_v4 + points_small + points_small_v2 
-                     + points_small_v3 + points_small_v4 + points_small_v5 + points_small_v6 + points_small_v7 + points_small_v8;
+points u_points (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .endgame(endgame),
+    .points(points),
+    .points_v2(points_v2),
+    .points_medium(points_medium),
+    .points_medium_v2(points_medium_v2),
+    .points_medium_v3(points_medium_v3),
+    .points_medium_v4(points_medium_v4),
+    .points_small(points_small),
+    .points_small_v2(points_small_v2),
+    .points_small_v3(points_small_v3),
+    .points_small_v4(points_small_v4),
+    .points_small_v5(points_small_v5),
+    .points_small_v6(points_small_v6),
+    .points_small_v7(points_small_v7),
+    .points_small_v8(points_small_v8),
+    .total_points(total_points)
+);
 
 draw_string
 #(
@@ -1871,27 +1914,81 @@ MouseCtl u_mousectl (
 
 //---------WAIT FOR ENEMY----------------------------------
 
-// draw_string
-// #(
-//     .CHAR_XPOS(384),
-//     .CHAR_YPOS(345),
-//     .CHAR_HEIGHT(16),
-//     .WIDTH(16),
-//     .SIZE(2),
-//     .TEXT(">Wait for enemy<"),
-//     .COLOUR(12'hFFF)
-// ) u_draw_wait (
-//     .clk(clk65MHz),
-//     .rst(rst | reset_game),
+draw_string
+#(
+    .CHAR_XPOS(384),
+    .CHAR_YPOS(345),
+    .CHAR_HEIGHT(16),
+    .WIDTH(16),
+    .SIZE(1),
+    .TEXT(">Wait for enemy<"),
+    .COLOUR(12'hFFF)
+) u_draw_wait (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
 
-//     .enable(endgame && string_toggle),
-//     .value(2'b0), // not used
-//     .in(draw_seconds_if),
-//     .out(draw_wait_if)
+    .enable((first_click_done && string_toggle && !opp_first_click) 
+                || (string_toggle && endgame && !opp_endgame)),
+    .value(2'b0), // not used
+    .in(draw_seconds_if),
+    .out(draw_wait_if)
 
-// );
+);
+
+//------------UART-------------------------------------------
+
+uart_ctl u_uart_ctl(
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .endgame(endgame),
+    .first_click(first_click_done),
+    .rx(rx),
+    .tx(tx),
+    .opp_endgame(opp_endgame),
+    .opp_first_click(opp_first_click)
+);
+
+uart_seconds u_uart_seconds(
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .seconds(seconds),
+    .rx_s(rx_s),
+    .tx_s(tx_s),
+    .opp_seconds(opp_seconds)
+);
+
+uart_minutes u_uart_minutes(
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .minutes(minutes),
+    .rx_m(rx_m),
+    .tx_m(tx_m),
+    .opp_minutes(opp_minutes)
+);
+
+uart_points u_uart_points(
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .points(total_points),
+    .rx_p(rx_p),
+    .tx_p(tx_p),
+    .opp_points(opp_points)
+);
 
 //--------ENDGAME--------------------------------------------
+
+result u_result (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .minutes(minutes),
+    .seconds(seconds),
+    .points(total_points),
+    .opp_minutes(opp_minutes),
+    .opp_seconds(opp_seconds),
+    .opp_points(opp_points),
+    .winner(winner),
+    .loser(loser)
+);
 
 draw_string
 #(
@@ -1905,29 +2002,29 @@ draw_string
 ) u_draw_win (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame && winner),
     .value(2'b0), // not used
-    .in(draw_seconds_if),
+    .in(draw_wait_if),
     .out(draw_win_if)
 );
 
-// draw_string
-// #(
-//     .CHAR_XPOS(256),
-//     .CHAR_YPOS(110),
-//     .CHAR_HEIGHT(12),
-//     .WIDTH(8),
-//     .SIZE(3),
-//     .TEXT("YOU LOSE"),
-//     .COLOUR(12'hF00) // czerwony
-// ) u_draw_lose (
-//     .clk(clk65MHz),
-//     .rst(rst | reset_game),
-//     .enable(endgame),
-//     .value(2'b0), // not used
-//     .in(draw_seconds_if),
-//     .out(draw_lose_if)
-// );
+draw_string
+#(
+    .CHAR_XPOS(256),
+    .CHAR_YPOS(110),
+    .CHAR_HEIGHT(12),
+    .WIDTH(8),
+    .SIZE(3),
+    .TEXT("YOU LOSE"),
+    .COLOUR(12'hF00) // czerwony
+) u_draw_lose (
+    .clk(clk65MHz),
+    .rst(rst | reset_game),
+    .enable(endgame && opp_endgame && loser),
+    .value(2'b0), // not used
+    .in(draw_win_if),
+    .out(draw_lose_if)
+);
 
 draw_string
 #(
@@ -1941,9 +2038,9 @@ draw_string
 ) u_draw_you (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(2'b0), // not used
-    .in(draw_win_if),
+    .in(draw_lose_if),
     .out(draw_you_if)
 );
 
@@ -1959,13 +2056,14 @@ draw_string
 ) u_draw_enemy (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(2'b0), // not used
     .in(draw_you_if),
     .out(draw_enemy_if)
 );
 
 //-------POINTS-------------
+
 
 draw_string
 #(
@@ -1979,7 +2077,7 @@ draw_string
 ) u_draw_score_v2 (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(2'b0), // not used
     .in(draw_enemy_if),
     .out(draw_score_v2_if)
@@ -1999,7 +2097,7 @@ draw_string
 ) u_draw_points_you (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(total_points[5:0]),
     .in(draw_score_v2_if),
     .out(draw_points_you_if)
@@ -2019,8 +2117,8 @@ draw_string
 ) u_draw_points_enemy (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
-    .value(total_points[5:0]),
+    .enable(endgame && opp_endgame),
+    .value(opp_points[5:0]),
     .in(draw_points_you_if),
     .out(draw_points_enemy_if)
 );
@@ -2039,7 +2137,7 @@ draw_string
 ) u_draw_time (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(2'b0), // not used
     .in(draw_points_enemy_if),
     .out(draw_time_if)
@@ -2059,7 +2157,7 @@ draw_string
 ) u_draw_minutes_you (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(minutes[5:0]),
     .in(draw_colon_you_if),
     .out(draw_minutes_you_if)
@@ -2078,7 +2176,7 @@ draw_string
 ) u_draw_colon_you (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(2'b0), // not used
     .in(draw_time_if),
     .out(draw_colon_you_if)
@@ -2098,7 +2196,7 @@ draw_string
 ) u_draw_seconds_you (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(seconds[5:0]),
     .in(draw_minutes_you_if),
     .out(draw_seconds_you_if)
@@ -2121,8 +2219,8 @@ draw_string
 ) u_draw_minutes_enemy (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
-    .value(minutes[5:0]),
+    .enable(endgame && opp_endgame),
+    .value(opp_minutes[5:0]),
     .in(draw_colon_enemy_if),
     .out(draw_minutes_enemy_if)
 );
@@ -2139,7 +2237,7 @@ draw_string
 ) u_draw_colon_enemy (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
+    .enable(endgame && opp_endgame),
     .value(2'b0), // not used
     .in(draw_seconds_you_if),
     .out(draw_colon_enemy_if)
@@ -2159,8 +2257,8 @@ draw_string
 ) u_draw_seconds_enemy (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame),
-    .value(seconds[5:0]),
+    .enable(endgame && opp_endgame),
+    .value(opp_seconds[5:0]),
     .in(draw_minutes_enemy_if),
     .out(draw_seconds_enemy_if)
 );
@@ -2171,7 +2269,7 @@ draw_string
 game_reset u_game_reset (
     .clk(clk65MHz),
     .rst(rst),
-    .endgame(endgame),
+    .endgame(endgame && opp_endgame),
     .left(left_latch),
     .reset_game(reset_game)
 );
@@ -2188,7 +2286,7 @@ draw_string
 ) u_draw_restart (
     .clk(clk65MHz),
     .rst(rst | reset_game),
-    .enable(endgame && string_toggle),
+    .enable(endgame && string_toggle && opp_endgame),
     .value(2'b0), // not used
     .in(draw_seconds_enemy_if),
     .out(draw_restart_if)

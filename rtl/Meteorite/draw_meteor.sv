@@ -14,6 +14,7 @@ module draw_meteor
         input  logic [11:0] meteor_x,
         input  logic [11:0] meteor_y,
         input  logic remove,
+        input  logic endgame,
         input  logic [11:0] ext_start_x,
         input  logic [11:0] ext_start_y, 
         input  logic        use_external_start,
@@ -91,7 +92,7 @@ module draw_meteor
             start_meteor <= 1'b0;
             meteor_gone_nxt  <= 1'b0;
             points <= 0;
-        end else if (remove) begin
+        end else if (remove || endgame) begin
             start_meteor <= 1'b0;
             meteor_visible <= 1'b0;
             meteor_gone_nxt <= 1'b1;
