@@ -9,7 +9,6 @@
  * 
  **/
 
-
 module draw_rect_char
     #(parameter 
         WIDTH = 32,
@@ -50,7 +49,6 @@ module draw_rect_char
     logic [7:0] pixel_index;
     logic [2:0] bit_index;
 
-    
     assign char_xy_nxt = (in.hcount >= CHAR_XPOS)
                          ? (((in.hcount - CHAR_XPOS) >> 3) >> SCALE_POWER_OF_2) 
                          : 0;

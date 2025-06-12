@@ -8,7 +8,6 @@
  * 
  **/
 
-
 module collision
     #(parameter
         METEOR_W = 150,

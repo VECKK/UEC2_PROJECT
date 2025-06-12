@@ -8,7 +8,6 @@
  *
  * Description: image module for game logo
  * 
- * 
  **/
 
 module image_logo (

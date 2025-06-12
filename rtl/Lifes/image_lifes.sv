@@ -16,7 +16,6 @@ module image_lifes (
     output logic [11:0] rgb
 );
 
-
 /**
  * Local variables and signals
  */

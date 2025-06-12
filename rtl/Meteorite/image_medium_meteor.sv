@@ -8,7 +8,6 @@
  *
  * Description: image module for medium meteorite used as an enemy sprite
  * 
- * 
  **/
 
 module image_medium_meteor (

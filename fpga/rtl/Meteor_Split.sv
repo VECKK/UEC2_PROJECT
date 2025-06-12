@@ -65,7 +65,6 @@ module Meteor_Split (
      * FPGA submodules placement
      */
 
-
      clk_wiz_0_clk_wiz inst
      (
      // Clock out ports  

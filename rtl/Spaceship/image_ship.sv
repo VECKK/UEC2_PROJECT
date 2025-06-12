@@ -8,7 +8,6 @@
  *
  * Description: image module for spaceship used as a player sprite
  * 
- * 
  **/
 
 module image_ship (

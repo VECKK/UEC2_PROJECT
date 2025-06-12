@@ -9,7 +9,6 @@
  * 
  **/
 
-
 module draw_spaceship (
         input  logic clk65MHz,
         input  logic rst,

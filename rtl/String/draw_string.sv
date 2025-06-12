@@ -9,7 +9,6 @@
  * 
  **/
 
-
 module draw_string
     #(parameter
         CHAR_XPOS = 128, 

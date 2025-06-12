@@ -4,7 +4,7 @@
  * Author: Wiktoria Borycka
  * Co-Author: Kacper Kierzek
  *
- * Description: Top module for whole VGA game
+ * Description: Top module for whole VGA game.
  * 
  **/
 

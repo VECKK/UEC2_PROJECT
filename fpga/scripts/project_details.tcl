@@ -1,6 +1,8 @@
 # Copyright (C) 2025  AGH University of Science and Technology
 # MTM UEC2
 # Author: Piotr Kaczmarczyk
+# Co-Author: Wiktoria Borycka,
+#            Kacper Kierzek
 #
 # Description:
 # Project detiles required for generate_bitstream.tcl

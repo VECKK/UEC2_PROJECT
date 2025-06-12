@@ -7,7 +7,6 @@
  * 
  **/
 
-
 module draw_mouse (
         input  logic clk65MHz,
         input  logic rst,

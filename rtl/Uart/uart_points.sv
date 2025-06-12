@@ -4,7 +4,7 @@
  * Author: Wiktoria Borycka
  * Co-Author: Kacper Kierzek
  *
- * Description: module to control UART communication for points
+ * Description: Module to control UART communication for points.
  * 
  **/
 
