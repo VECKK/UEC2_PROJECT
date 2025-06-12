@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module used for drawing rectangle 
+ * for bullet image
+ * 
+ **/
+
 module draw_bullet (
         input  logic clk65MHz,
         input  logic rst,
@@ -25,11 +36,6 @@ module draw_bullet (
     logic [10:0] two_hcount;
     logic [11:0] two_rgb;
     logic        two_vsync, two_vblnk, two_hsync, two_hblnk;
-
-
-    /**
-     * Internal logic
-     */
 
     always_ff @(posedge clk65MHz) begin : one_ff_blk
         if (rst) begin
@@ -98,7 +104,7 @@ module draw_bullet (
             two_hcount >= (spaceship_x + ((WIDTH / 2) - 2)) && two_hcount < (spaceship_x + ((WIDTH / 2) - 2)) + BULLET_W &&
             two_vcount >= (spaceship_y + 2) && two_vcount < (spaceship_y + 2) + BULLET_H) begin
             if (rgb_bullet == 12'hE3F) begin
-                rgb_nxt = two_rgb; // Use input RGB if rgb_bullet matches E3F
+                rgb_nxt = two_rgb; 
             end else begin
                 rgb_nxt = rgb_bullet;
             end

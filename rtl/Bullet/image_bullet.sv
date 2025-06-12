@@ -1,3 +1,16 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Robert Szczygiel
+ * Co-Author: Piotr Kaczmarczyk,
+ *            Witkoria Borycka,
+ *            Kacper Kierzek
+ *
+ * Description: image module for bullet used as a player attack sprite
+ * 
+ * 
+ **/
+
 module image_bullet (
         input  logic clk ,
         input  logic [7:0] address,

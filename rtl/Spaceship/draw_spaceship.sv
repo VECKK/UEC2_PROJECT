@@ -1,3 +1,15 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to draw a spaceship on the screen
+ * handling mouse input, blinking effect and centering the spaceship
+ * 
+ **/
+
+
 module draw_spaceship (
         input  logic clk65MHz,
         input  logic rst,
@@ -22,10 +34,6 @@ module draw_spaceship (
 
     import vga_pkg::*;
 
-    /**
-     * Local variables and signals
-     */
-
     logic [11:0] rgb_nxt;
     logic [10:0] one_vcount;
     logic [10:0] one_hcount;
@@ -38,8 +46,8 @@ module draw_spaceship (
 
     logic spaceship_follow_mouse = 1'b0;
     logic armed = 1'b0; 
-    logic [3:0] blink_count;         // Licznik mignięć
-    logic [22:0] blink_timer;        // Licznik czasu (dla 4 Hz przy 65 MHz: 16_250_000)
+    logic [3:0] blink_count;      
+    logic [22:0] blink_timer;       
     logic        blink_visible; 
 
     always_ff @(posedge clk65MHz) begin
@@ -49,13 +57,12 @@ module draw_spaceship (
             blink_timer   <= 23'd0;
             blink_visible <= 1'b1;
         end else if (remove && !blinking && !endgame) begin
-            // Start migania po zniknięciu
             blinking      <= 1'b1;
             blink_count   <= 4'd0;
             blink_timer   <= 23'd0;
             blink_visible <= 1'b0;
         end else if (blinking && !endgame) begin
-            if (blink_timer < 8_125_000) begin // ok. 0.125 s
+            if (blink_timer < 8_125_000) begin 
                 blink_timer <= blink_timer + 1;
             end else begin
                 blink_timer   <= 23'd0;
@@ -63,15 +70,14 @@ module draw_spaceship (
                 blink_visible <= ~blink_visible;
                 if (blink_count == 15) begin
                     blinking      <= 1'b0;
-                    blink_visible <= 1'b1; // Po miganiu statek widoczny
+                    blink_visible <= 1'b1; 
                 end
             end
         end else begin
-            blink_visible <= 1'b1; // Normalnie statek widoczny
+            blink_visible <= 1'b1; 
         end
     end
 
-    // Po pierwszym kliknięciu prostokąt podąża za myszką
     always_ff @(posedge clk65MHz) begin
         if (rst || endgame) begin
             spaceship_follow_mouse <= 1'b0;
@@ -84,7 +90,6 @@ module draw_spaceship (
         end
     end
 
-    // Wybór pozycji prostokąta
     always_comb begin
         if (spaceship_follow_mouse) begin
             spaceship_x = xpos - (WIDTH / 2);

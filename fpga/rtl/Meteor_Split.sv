@@ -7,12 +7,14 @@
  * 2025  AGH University of Science and Technology
  * MTM UEC2
  * Piotr Kaczmarczyk
+ * Wiktoria Borycka
+ * Kacper Kierzek
  *
  * Description:
  * Top level synthesizable module including the project top and all the FPGA-referred modules.
  */
 
-module top_vga_basys3 (
+module Meteor_Split (
         input  wire clk,
         input  wire btnC,
         input  wire JA3,

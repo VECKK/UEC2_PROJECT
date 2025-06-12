@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Kacper Kierzek
+ * Co-Author: Wiktoria Borycka
+ *
+ * Description: module to draw player lifes on the screen
+ * 
+ **/
+
+
 module draw_lifes(
     input  logic clk65MHz,
     input  logic rst,
@@ -39,7 +50,6 @@ localparam life_x = 12'd10;
 localparam life_y = 12'd718;
 localparam SPACE = 5;
 
-    // Edge detection logic
     always_ff @(posedge clk65MHz or posedge rst) begin
         if (rst) begin
             lost_life_d <= 1'b0;
@@ -48,20 +58,19 @@ localparam SPACE = 5;
         end
     end
 
-    assign lost_life_edge = lost_life && !lost_life_d; // Detect rising edge of lost_life
+    assign lost_life_edge = lost_life && !lost_life_d; 
 
-    // Life counter logic
+   
     always_ff @(posedge clk65MHz or posedge rst) begin
         if (rst) begin
-            lifes_count <= 3; // Initialize to 3 lives
+            lifes_count <= 3; 
         end else if (lost_life_edge && lifes_count > 0) begin
-            lifes_count <= lifes_count - 1; // Decrement lives on rising edge of lost_life
+            lifes_count <= lifes_count - 1; 
         end
     end
 
-    // Endgame logic
     always_comb begin
-        endgame = (lifes_count == 0); // Set endgame high when no lives are left
+        endgame = (lifes_count == 0); 
     end
 
     always_ff @(posedge clk65MHz) begin : one_ff_blk

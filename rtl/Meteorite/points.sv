@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ *
+ * Description: module to calculate total points based on various point inputs
+ * 
+ **/
+
+
 module points (
     input logic clk,
     input logic rst,

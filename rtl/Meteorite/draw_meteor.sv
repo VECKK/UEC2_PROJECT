@@ -1,8 +1,19 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to draw a meteorite on the screen
+ * 
+ **/
+
+
 module draw_meteor 
     #( parameter
         METEOR_W = 150,
         METEOR_H = 150,
-        DELAY = 130_000_000, // ok 2s
+        DELAY = 130_000_000, 
         DELAY_BITS = 27,
         ADDR = 13,
         POINTS = 1,
@@ -28,7 +39,6 @@ module draw_meteor
         output logic meteor_gone,
         output logic [1:0] points,
 
-
         vga_if.in in,
         vga_if.out out
     );
@@ -37,10 +47,6 @@ module draw_meteor
     timeprecision 1ps;
 
     import vga_pkg::*;
-
-    /**
-     * Local variables and signals
-     */
 
     logic [11:0] rgb_nxt;
     logic [10:0] one_vcount;
@@ -188,15 +194,13 @@ module draw_meteor
             two_hcount >= meteor_x && two_hcount < meteor_x + METEOR_W &&
             two_vcount >= meteor_y && two_vcount < meteor_y + METEOR_H && !two_hblnk && !two_vblnk) begin
 
-            // Compute scaled coordinates
             automatic int img_x = ((two_hcount - meteor_x) >> 1);
             automatic int img_y = ((two_vcount - meteor_y) >> 1);
 
-            // Compute ROM address (row-major order)
             meteor_addr = img_y * IMG_WIDTH + img_x;
 
             if (rgb_meteor == 12'hE3F) begin
-                rgb_nxt = two_rgb; // Use input RGB if rgb_pixel matches E3F
+                rgb_nxt = two_rgb;
             end else begin
                 rgb_nxt = rgb_meteor;
             end

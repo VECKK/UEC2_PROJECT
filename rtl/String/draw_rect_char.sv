@@ -1,11 +1,23 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to draw a rectangle with a text character on the screen,
+ * parameters allow to set the width, height, position, scale factor and color of the rectangle
+ * 
+ **/
+
+
 module draw_rect_char
     #(parameter 
         WIDTH = 32,
         CHAR_HEIGHT = 15,
         CHAR_XPOS = 450,
         CHAR_YPOS = 370,
-        SCALE_POWER_OF_2 = 2,  // 2^POWER_OF_2 = 2
-        COLOUR = 12'hF00 // RGB color for the character
+        SCALE_POWER_OF_2 = 2,  
+        COLOUR = 12'hF00 
     )
     (
         input logic clk,
@@ -38,13 +50,13 @@ module draw_rect_char
     logic [7:0] pixel_index;
     logic [2:0] bit_index;
 
-    // Zoptymalizowane obliczenia bez dzielenia
+    
     assign char_xy_nxt = (in.hcount >= CHAR_XPOS)
-                         ? (((in.hcount - CHAR_XPOS) >> 3) >> SCALE_POWER_OF_2) // dzielenie przez 32
+                         ? (((in.hcount - CHAR_XPOS) >> 3) >> SCALE_POWER_OF_2) 
                          : 0;
 
     assign char_line_nxt = (vcount_one >= CHAR_YPOS)
-                           ? ((vcount_one - CHAR_YPOS) >> SCALE_POWER_OF_2) // dzielenie przez 4
+                           ? ((vcount_one - CHAR_YPOS) >> SCALE_POWER_OF_2) 
                            : 0;
 
     always_ff @(posedge clk) begin

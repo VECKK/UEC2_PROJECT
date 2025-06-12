@@ -13,10 +13,10 @@
 #                   Project details                   #
 #-----------------------------------------------------#
 # Project name                                  -- EDIT
-set project_name vga_project
+set project_name Meteor_Split_project
 
 # Top module name                               -- EDIT
-set top_module top_vga_basys3
+set top_module Meteor_Split_top_basys3
 
 # FPGA device
 set target xc7a35tcpg236-1
@@ -75,7 +75,7 @@ set sv_files {
     ../rtl/Uart/uart_rx.v
     ../rtl/Uart/uart_tx.v
     ../rtl/Uart/uart.v
-    rtl/top_vga_basys3.sv
+    rtl/Meteor_Split.sv
 }
 
 # Specify Verilog design files location         -- EDIT

@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: Top module for whole VGA game
+ * 
+ **/
+
 module top_vga (
     input  logic clk65MHz,
     input  logic rst,
@@ -178,14 +188,12 @@ logic [5:0] total_points;
 //timer
 logic [5:0] seconds, minutes;
 //mouse
-logic first_click_done, right_click_done;
+logic first_click_done;
 //endgame
 logic endgame;
-//reset
-logic reset_game;
 //uart
 logic [5:0] opp_points, opp_minutes, opp_seconds;
-logic opp_first_click, opp_endgame, opp_right_click, winner, loser;
+logic opp_first_click, opp_endgame, winner, loser;
 
 
 tbg_if timing_if();
@@ -241,17 +249,9 @@ vga_if draw_minutes_enemy_if();
 vga_if draw_restart_if();
 
 
-
-
-/**
- * Signals assignments
- */
-
 assign vs = draw_mouse_if.vsync;
 assign hs = draw_mouse_if.hsync;
 assign {r,g,b} = draw_mouse_if.rgb[11:0];
-
-
 
 
 vga_timing u_vga_timing (
@@ -281,7 +281,7 @@ image_bg u_image_bg (
 //---------LOGO------------------------------------
 draw_logo u_draw_logo (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .enable(!first_click_done),
     .rgb_logo(rgb_logo),
     .logo_addr(logo_addr),
@@ -300,10 +300,10 @@ image_logo u_image_logo (
 
 draw_string u_draw_title (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .enable(!first_click_done),
-    .value(2'b0), // not used
+    .value(2'b0),
     .in(draw_logo_if),
     .out(draw_title_if)
 );
@@ -319,17 +319,17 @@ draw_string
     .COLOUR(12'hFFF)
 ) u_draw_string (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .enable(!first_click_done && string_toggle),
-    .value(2'b0), // not used
+    .value(2'b0),
     .in(draw_title_if),
     .out(draw_string_if)
 );
 
 toggle u_toggle_string (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .toggle(string_toggle)
 );
 
@@ -337,7 +337,7 @@ toggle u_toggle_string (
 
 draw_spaceship u_draw_spaceship (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in (draw_bullet_if),
     .out(draw_spaceship_if),
@@ -371,7 +371,7 @@ assign lost_life = collision || collision_v2 || collision_v3 || collision_medium
 
 draw_lifes u_draw_lifes (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .enable(active_shoot),
     .lost_life(lost_life),
     .endgame(end_lifes),
@@ -393,7 +393,7 @@ image_lifes u_image_lifes (
 
 collision u_collision (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x),
@@ -406,7 +406,7 @@ collision u_collision (
 
 collision u_collision_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_v2),
@@ -419,7 +419,7 @@ collision u_collision_v2 (
 
 collision u_collision_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_v3),
@@ -436,7 +436,7 @@ collision
     .METEOR_H(120)
 ) u_medium_collision (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium),
@@ -453,7 +453,7 @@ collision
     .METEOR_H(120)
 ) u_medium_collision_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium_v2),
@@ -470,7 +470,7 @@ collision
     .METEOR_H(120)
 ) u_medium_collision_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium_v3),
@@ -487,7 +487,7 @@ collision
     .METEOR_H(120)
 ) u_medium_collision_v4 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium_v4),
@@ -504,7 +504,7 @@ collision
     .METEOR_H(120)
 ) u_medium_collision_v5 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium_v5),
@@ -521,7 +521,7 @@ collision
     .METEOR_H(120)
 ) u_medium_collision_v6 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_medium_v6),
@@ -538,7 +538,7 @@ collision
     .METEOR_H(64)
 )u_small_collision (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small),
@@ -555,7 +555,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v2),
@@ -572,7 +572,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v3),
@@ -589,7 +589,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v4 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v4),
@@ -606,7 +606,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v5 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v5),
@@ -623,7 +623,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v6 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v6),
@@ -640,7 +640,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v7 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v7),
@@ -657,7 +657,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v8 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v8),
@@ -674,7 +674,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v9 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v9),
@@ -691,7 +691,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v10 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v10),
@@ -708,7 +708,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v11 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v11),
@@ -725,7 +725,7 @@ collision
     .METEOR_H(64)
 ) u_small_collision_v12 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .spaceship_x(spaceship_x),
     .spaceship_y(spaceship_y),
     .meteor_x(meteor_x_small_v12),
@@ -744,7 +744,7 @@ assign remove_spaceship = remove_spaceship_v1 | remove_spaceship_v2 | remove_spa
 
 hit_meteor u_hit_meteor (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x),
@@ -757,7 +757,7 @@ hit_meteor u_hit_meteor (
 
 hit_meteor u_hit_meteor_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_v2),
@@ -770,7 +770,7 @@ hit_meteor u_hit_meteor_v2 (
 
 hit_meteor u_hit_meteor_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_v3),
@@ -787,7 +787,7 @@ hit_meteor
     .METEOR_H(120)
 ) u_hit_medium_meteor (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_medium),
@@ -804,7 +804,7 @@ hit_meteor
     .METEOR_H(120)
 ) u_hit_medium_meteor_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_medium_v2),
@@ -821,7 +821,7 @@ hit_meteor
     .METEOR_H(120)
 ) u_hit_medium_meteor_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_medium_v3),
@@ -838,7 +838,7 @@ hit_meteor
     .METEOR_H(120)
 ) u_hit_medium_meteor_v4 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_medium_v4),
@@ -855,7 +855,7 @@ hit_meteor
     .METEOR_H(120)
 ) u_hit_medium_meteor_v5 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_medium_v5),
@@ -872,7 +872,7 @@ hit_meteor
     .METEOR_H(120)
 ) u_hit_medium_meteor_v6 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_medium_v6),
@@ -889,7 +889,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small),
@@ -906,7 +906,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v2),
@@ -923,7 +923,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v3),
@@ -940,7 +940,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v4 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v4),
@@ -957,7 +957,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v5 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v5),
@@ -974,7 +974,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v6 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v6),
@@ -991,7 +991,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v7 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v7),
@@ -1008,7 +1008,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v8 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v8),
@@ -1025,7 +1025,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v9 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v9),
@@ -1042,7 +1042,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v10 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v10),
@@ -1059,7 +1059,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v11 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v11),
@@ -1076,7 +1076,7 @@ hit_meteor
     .METEOR_H(64)
 ) u_hit_small_meteor_v12 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .bullet_x(bullet_x),
     .bullet_y(bullet_y),
     .meteor_x(meteor_x_small_v12),
@@ -1092,9 +1092,10 @@ assign remove_bullet = remove_bullet_v1 | remove_bullet_v2 | remove_bullet_v3 | 
     remove_bullet_small_v6 | remove_bullet_small_v7 | remove_bullet_small_v8 | remove_bullet_small_v9 | remove_bullet_small_v10 | remove_bullet_small_v11 | remove_bullet_small_v12;
 
 //----------BULLET-------------------------------------------------------
+
 draw_bullet u_draw_bullet (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in (draw_string_if),
     .out(draw_bullet_if),
@@ -1117,7 +1118,7 @@ image_bullet u_image_bullet (
 
 shoot u_shoot (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .fire(left),
     .xpos(spaceship_x),
     .ypos(spaceship_y),
@@ -1129,9 +1130,10 @@ shoot u_shoot (
 );
 
 //---------METEORITE_1-----------------------------------------------------
+
 draw_meteor u_draw_meteor (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_spaceship_if),
     .out(draw_meteor_if),
@@ -1158,7 +1160,7 @@ draw_meteor u_draw_meteor (
 
 prog_meteor u_prog_meteor (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_meteor),
     .start_x(start_x),
     .start_y(start_y),
@@ -1187,7 +1189,7 @@ draw_meteor
     .IMG_WIDTH(64)
 ) u_draw_medium_meteor (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_meteor_v3_if),
     .out(draw_medium_meteor_if),
@@ -1220,7 +1222,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_medium_meteor (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_medium),
     .start_x(start_x_medium),
     .start_y(start_y_medium),
@@ -1249,7 +1251,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_medium_meteor_v6_if),
     .out(draw_small_meteor_if),
@@ -1282,7 +1284,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_small_meteor (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small),
     .start_x(start_x_small),
     .start_y(start_y_small),
@@ -1311,7 +1313,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v2 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_if),
     .out(draw_small_meteor_v2_if),
@@ -1344,7 +1346,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_small_meteor_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v2),
     .start_x(start_x_small_v2),
     .start_y(start_y_small_v2),
@@ -1373,7 +1375,7 @@ draw_meteor
     .IMG_WIDTH(64)
 ) u_draw_medium_meteor_v2 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_medium_meteor_if),
     .out(draw_medium_meteor_v2_if),
@@ -1406,7 +1408,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_medium_meteor_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_medium_v2),
     .start_x(start_x_medium_v2),
     .start_y(start_y_medium_v2),
@@ -1435,7 +1437,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v3 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v2_if),
     .out(draw_small_meteor_v3_if),
@@ -1468,7 +1470,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_small_meteor_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v3),
     .start_x(start_x_small_v3),
     .start_y(start_y_small_v3),
@@ -1497,7 +1499,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v4 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v3_if),
     .out(draw_small_meteor_v4_if),
@@ -1530,7 +1532,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_small_meteor_v4 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v4),
     .start_x(start_x_small_v4),
     .start_y(start_y_small_v4),
@@ -1555,7 +1557,7 @@ draw_meteor
     .DELAY_BITS(28)
 ) u_draw_meteor_v2 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_meteor_if),
     .out(draw_meteor_v2_if),
@@ -1582,7 +1584,7 @@ draw_meteor
 
 prog_meteor u_prog_meteor_v2 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_v2),
     .start_x(start_x_v2),
     .start_y(start_y_v2),
@@ -1611,7 +1613,7 @@ draw_meteor
     .IMG_WIDTH(64)
 ) u_draw_medium_meteor_v3 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_medium_meteor_v2_if),
     .out(draw_medium_meteor_v3_if),
@@ -1644,7 +1646,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_medium_meteor_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_medium_v3),
     .start_x(start_x_medium_v3),
     .start_y(start_y_medium_v3),
@@ -1673,7 +1675,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v5 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v4_if),
     .out(draw_small_meteor_v5_if),
@@ -1706,7 +1708,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_small_meteor_v5 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v5),
     .start_x(start_x_small_v5),
     .start_y(start_y_small_v5),
@@ -1735,7 +1737,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v6 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v5_if),
     .out(draw_small_meteor_v6_if),
@@ -1768,7 +1770,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_small_meteor_v6 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v6),
     .start_x(start_x_small_v6),
     .start_y(start_y_small_v6),
@@ -1797,7 +1799,7 @@ draw_meteor
     .IMG_WIDTH(64)
 ) u_draw_medium_meteor_v4 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_medium_meteor_v3_if),
     .out(draw_medium_meteor_v4_if),
@@ -1830,7 +1832,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_medium_meteor_v4 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_medium_v4),
     .start_x(start_x_medium_v4),
     .start_y(start_y_medium_v4),
@@ -1859,7 +1861,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v7 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v6_if),
     .out(draw_small_meteor_v7_if),
@@ -1892,7 +1894,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_small_meteor_v7 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v7),
     .start_x(start_x_small_v7),
     .start_y(start_y_small_v7),
@@ -1921,7 +1923,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v8 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v7_if),
     .out(draw_small_meteor_v8_if),
@@ -1954,7 +1956,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_small_meteor_v8 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v8),
     .start_x(start_x_small_v8),
     .start_y(start_y_small_v8),
@@ -1978,7 +1980,7 @@ draw_meteor
     .DELAY_BITS(28)
 ) u_draw_meteor_v3 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_meteor_v2_if),
     .out(draw_meteor_v3_if),
@@ -2005,7 +2007,7 @@ draw_meteor
 
 prog_meteor u_prog_meteor_v3 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_v3),
     .start_x(start_x_v3),
     .start_y(start_y_v3),
@@ -2034,7 +2036,7 @@ draw_meteor
     .IMG_WIDTH(64)
 ) u_draw_medium_meteor_v5 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_medium_meteor_v4_if),
     .out(draw_medium_meteor_v5_if),
@@ -2067,7 +2069,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_medium_meteor_v5 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_medium_v5),
     .start_x(start_x_medium_v5),
     .start_y(start_y_medium_v5),
@@ -2096,7 +2098,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v9 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v8_if),
     .out(draw_small_meteor_v9_if),
@@ -2129,7 +2131,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_small_meteor_v9 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v9),
     .start_x(start_x_small_v9),
     .start_y(start_y_small_v9),
@@ -2158,7 +2160,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v10 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v9_if),
     .out(draw_small_meteor_v10_if),
@@ -2191,7 +2193,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_small_meteor_v10 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v10),
     .start_x(start_x_small_v10),
     .start_y(start_y_small_v10),
@@ -2220,7 +2222,7 @@ draw_meteor
     .IMG_WIDTH(64)
 ) u_draw_medium_meteor_v6 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_medium_meteor_v5_if),
     .out(draw_medium_meteor_v6_if),
@@ -2253,7 +2255,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_medium_meteor_v6 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_medium_v6),
     .start_x(start_x_medium_v6),
     .start_y(start_y_medium_v6),
@@ -2282,7 +2284,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v11 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v10_if),
     .out(draw_small_meteor_v11_if),
@@ -2315,7 +2317,7 @@ prog_meteor
     .DIRECTION(0)
 ) u_prog_small_meteor_v11 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v11),
     .start_x(start_x_small_v11),
     .start_y(start_y_small_v11),
@@ -2344,7 +2346,7 @@ draw_meteor
     .IMG_WIDTH(32)
 ) u_draw_small_meteor_v12 (
     .clk65MHz(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
 
     .in(draw_small_meteor_v11_if),
     .out(draw_small_meteor_v12_if),
@@ -2377,7 +2379,7 @@ prog_meteor
     .DIRECTION(1)
 ) u_prog_small_meteor_v12 (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .start(start_small_v12),
     .start_x(start_x_small_v12),
     .start_y(start_y_small_v12),
@@ -2393,7 +2395,7 @@ image_small_meteor u_image_small_meteor_v12 (
     .address(meteor_addr_small_v12)
 );
 
-assign endgame = reset_game ? 0 : (meteor_gone && meteor_gone_v2 && meteor_gone_v3 && meteor_gone_medium && meteor_gone_medium_v2 && meteor_gone_medium_v3
+assign endgame = (meteor_gone && meteor_gone_v2 && meteor_gone_v3 && meteor_gone_medium && meteor_gone_medium_v2 && meteor_gone_medium_v3
                 && meteor_gone_medium_v4 && meteor_gone_medium_v5 && meteor_gone_medium_v6 && meteor_gone_small && meteor_gone_small_v2 && meteor_gone_small_v3 && meteor_gone_small_v4 
                 && meteor_gone_small_v5 && meteor_gone_small_v6 && meteor_gone_small_v7 && meteor_gone_small_v8 && meteor_gone_small_v9 && meteor_gone_small_v10 && meteor_gone_small_v11 
                 && meteor_gone_small_v12) || end_lifes;
@@ -2403,10 +2405,10 @@ assign hit_all = (meteor_gone && meteor_gone_v2 && meteor_gone_v3 && meteor_gone
                 && meteor_gone_small_v5 && meteor_gone_small_v6 && meteor_gone_small_v7 && meteor_gone_small_v8 && meteor_gone_small_v9 && meteor_gone_small_v10 && meteor_gone_small_v11 
                 && meteor_gone_small_v12) && !end_lifes;
 
-//----------TOGGLE----------------
+//-----------TOGGLE-------------
 
 toggle #(
-    .TOGGLE_MAX(650_000 - 1) //0.01s
+    .TOGGLE_MAX(650_000 - 1)
 ) u_toggle_meteor (
     .clk(clk65MHz),
     .rst(rst),
@@ -2457,7 +2459,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(active_shoot && !endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_lifes_if),
     .out(draw_score_if)
 );
@@ -2472,7 +2474,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_points (
     .clk(clk65MHz),
     .rst(rst),
@@ -2502,7 +2504,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_minutes (
     .clk(clk65MHz),
     .rst(rst),
@@ -2525,7 +2527,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(active_shoot && !endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_points_if),
     .out(draw_colon_if)
 );
@@ -2540,7 +2542,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_seconds (
     .clk(clk65MHz),
     .rst(rst),
@@ -2551,11 +2553,11 @@ draw_string
 );
 
 //----------MOUSE--------------------------------------------
+
 draw_mouse u_draw_mouse (
     .clk65MHz(clk65MHz),
     .rst(rst),
 
-    //.in(draw_wait_if),
     .in(draw_restart_if),
     .out(draw_mouse_if),
 
@@ -2569,9 +2571,7 @@ draw_mouse u_draw_mouse (
 buttons_ctl u_buttons_ctl (
     .clk(clk65MHz),
     .rst(rst),
-    .endgame(endgame),
     .first_click_done(first_click_done),
-    .right_click_done(right_click_done),
     .xpos(xpos),
     .ypos(ypos),
     .left(left),
@@ -2596,7 +2596,7 @@ draw_string
 
     .enable((first_click_done && string_toggle && !opp_first_click) 
                 || (string_toggle && endgame && !opp_endgame)),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_seconds_if),
     .out(draw_wait_if)
 
@@ -2609,12 +2609,10 @@ uart_ctl u_uart_ctl(
     .rst(rst),
     .endgame(endgame),
     .first_click(first_click_done),
-    .right_click(right_click_done),
     .rx(rx),
     .tx(tx),
     .opp_endgame(opp_endgame),
-    .opp_first_click(opp_first_click),
-    .opp_right_click(opp_right_click)
+    .opp_first_click(opp_first_click)
 );
 
 uart_seconds u_uart_seconds(
@@ -2648,7 +2646,7 @@ uart_points u_uart_points(
 
 result u_result (
     .clk(clk65MHz),
-    .rst(rst | reset_game),
+    .rst(rst),
     .minutes(minutes),
     .seconds(seconds),
     .points(total_points),
@@ -2672,7 +2670,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame && winner),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_wait_if),
     .out(draw_win_if)
 );
@@ -2690,7 +2688,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame && loser),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_win_if),
     .out(draw_lose_if)
 );
@@ -2708,7 +2706,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_lose_if),
     .out(draw_you_if)
 );
@@ -2726,13 +2724,12 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_you_if),
     .out(draw_enemy_if)
 );
 
 //-------POINTS-------------
-
 
 draw_string
 #(
@@ -2747,7 +2744,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_enemy_if),
     .out(draw_score_v2_if)
 );
@@ -2762,7 +2759,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_points_you (
     .clk(clk65MHz),
     .rst(rst),
@@ -2782,7 +2779,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_points_enemy (
     .clk(clk65MHz),
     .rst(rst),
@@ -2807,7 +2804,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_points_enemy_if),
     .out(draw_time_if)
 );
@@ -2822,7 +2819,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_minutes_you (
     .clk(clk65MHz),
     .rst(rst),
@@ -2846,7 +2843,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_time_if),
     .out(draw_colon_you_if)
 );
@@ -2861,7 +2858,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_seconds_you (
     .clk(clk65MHz),
     .rst(rst),
@@ -2884,7 +2881,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_minutes_enemy (
     .clk(clk65MHz),
     .rst(rst),
@@ -2907,7 +2904,7 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && opp_endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_seconds_you_if),
     .out(draw_colon_enemy_if)
 );
@@ -2922,7 +2919,7 @@ draw_string
     .TEXT("00"),
     .COLOUR(12'hFFF),
     .DYNAMIC(1'b1),
-    .VALUE_BITS(6) // 0-63
+    .VALUE_BITS(6) 
 ) u_draw_seconds_enemy (
     .clk(clk65MHz),
     .rst(rst),
@@ -2932,16 +2929,15 @@ draw_string
     .out(draw_seconds_enemy_if)
 );
 
-
 //----------RESET--------------------------------------------
 
-game_reset u_game_reset (
-    .clk(clk65MHz),
-    .rst(rst),
-    .endgame(endgame && opp_endgame),
-    .right(right_click_done && opp_right_click),
-    .reset_game(reset_game)
-);
+// game_reset u_game_reset (
+//     .clk(clk65MHz),
+//     .rst(rst),
+//     .endgame(endgame && opp_endgame),
+//     .right(right_click_done && opp_right_click),
+//     .reset_game(reset_game)
+// );
 
 draw_string
 #(
@@ -2956,11 +2952,11 @@ draw_string
     .clk(clk65MHz),
     .rst(rst),
     .enable(endgame && string_toggle && opp_endgame),
-    .value(2'b0), // not used
+    .value(2'b0), 
     .in(draw_seconds_enemy_if),
     .out(draw_restart_if)
 );
 
-//----------------------------
+//-----------------------------------------------------------
 
 endmodule

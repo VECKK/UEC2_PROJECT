@@ -1,9 +1,17 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Kacper Kierzek
+ * Co-Author: Wiktoria Borycka
+ *
+ * Description: module to control mouse buttons and their actions in the game
+ * 
+ **/
+
 module buttons_ctl (
     input  logic clk,
     input  logic rst,
-    input  logic endgame,
     output logic first_click_done,
-    output logic right_click_done,
     output logic [11:0] xpos,
     output logic [11:0] ypos,
     output logic left,
@@ -17,7 +25,7 @@ timeprecision 1ps;
 
 import vga_pkg::*;
 
-logic left_latch, prev_left, right_latch, prev_right, right;
+logic left_latch, prev_left;
 logic setx, sety;
 logic [11:0] value_x, value_y;
 
@@ -27,7 +35,6 @@ always_ff @(posedge clk or posedge rst) begin
         left_latch <= 1'b0;
     end else begin
         prev_left  <= left;
-        // Impuls tylko na zbocze narastające
         if (left && !prev_left)
             left_latch <= 1'b1;
         else
@@ -40,27 +47,6 @@ always_ff @(posedge clk) begin
         first_click_done <= 1'b0;
     else if (left_latch && !first_click_done)
         first_click_done <= 1'b1;
-end
-
-always_ff @(posedge clk or posedge rst) begin
-    if (rst) begin
-        prev_right  <= 1'b0;
-        right_latch <= 1'b0;
-    end else begin
-        prev_right  <= right;
-        // Impuls tylko na zbocze narastające
-        if (right && !prev_right && endgame)
-            right_latch <= 1'b1;
-        else
-            right_latch <= 1'b0;
-    end
-end
-
-always_ff @(posedge clk) begin
-    if (rst)
-        right_click_done <= 1'b0;
-    else if (right_latch && !right_click_done)
-        right_click_done <= 1'b1;
 end
 
 always_comb begin
@@ -87,7 +73,7 @@ MouseCtl u_mousectl (
     .zpos(),
     .left(left),
     .middle(),
-    .right(right),
+    .right(),
     .value_x(value_x),
     .value_y(value_y),
     .setx(setx),

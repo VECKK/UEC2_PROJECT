@@ -1,4 +1,9 @@
-//Listing 8.1
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * 
+ **/
+ 
 module uart_rx
    #(
      parameter DBIT = 8,     // # data bits

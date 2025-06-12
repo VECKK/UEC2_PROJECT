@@ -1,16 +1,28 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to implemet meteorite movement in the game,
+ *              meteorite moves in a random direction and bounces off the edges of the screen
+ * 
+ **/
+
+
 module prog_meteor 
     #(parameter
         METEOR_SPEED = 1400,
         METEOR_W = 150,
         METEOR_H = 150,
-        DIRECTION = 1 // 1 = dół, 0 = góra
+        DIRECTION = 1
     )(
         input  logic        clk,
         input  logic        rst,
         input  logic        start,
         input  logic [11:0] start_x,
         input  logic [11:0] start_y,
-        input  logic        direction_condition, // losowy bit
+        input  logic        direction_condition,
         input  logic        enable,
         output logic [11:0] meteor_x,
         output logic [11:0] meteor_y
@@ -33,16 +45,15 @@ module prog_meteor
     logic [39:0] xpos_q12_28, ypos_q12_28;
     logic [39:0] xpos_nxt_q12_28, ypos_nxt_q12_28;
 
-    // Kierunek na starcie
     always_ff @(posedge clk) begin
         if (rst || start) begin
             xpos_q12_28 <= {start_x, 28'd0};
             ypos_q12_28 <= {start_y, 28'd0};
             meteor_x <= start_x;
             meteor_y <= start_y;
-            if (DIRECTION) // dół
+            if (DIRECTION) 
                 direction <= direction_condition ? RIGHT_DOWN : LEFT_DOWN;
-            else           // góra
+            else           
                 direction <= direction_condition ? RIGHT_UP : LEFT_UP;
         end else if (enable) begin
             xpos_q12_28 <= xpos_nxt_q12_28;
@@ -53,7 +64,6 @@ module prog_meteor
         end
     end
 
-   // Blok wyznaczający następny kierunek
     always_comb begin : direction_nxt_blk
         case (direction)
             LEFT_DOWN: begin
@@ -92,7 +102,6 @@ module prog_meteor
         endcase
     end
 
-    // Blok wyznaczający następną pozycję
     always_comb begin : pos_nxt_blk
         case (direction_nxt)
             LEFT_DOWN: begin

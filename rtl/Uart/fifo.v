@@ -1,4 +1,9 @@
-// Listing 4.20
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * 
+ **/
+
 module fifo
    #(
     parameter B=8, // number of bits in a word

@@ -1,16 +1,26 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to draw a string on the screen
+ * to display dynamic or static text based on input value and parameters
+ * 
+ **/
+
+
 module draw_string
     #(parameter
-        CHAR_XPOS = 128, // X position
-        CHAR_YPOS = 215, // Y position
-        CHAR_HEIGHT = 12, // height of the character in pixels
-        WIDTH = 12, // number of characters in the horizontal direction
-        SIZE = 3, // 2^SIZE = 8,
-        TEXT = "METEOR SPLIT", // text to be displayed
-        COLOUR = 12'hC52,  // color for the character, default is black
+        CHAR_XPOS = 128, 
+        CHAR_YPOS = 215, 
+        CHAR_HEIGHT = 12, 
+        WIDTH = 12, 
+        SIZE = 3, 
+        TEXT = "METEOR SPLIT", 
+        COLOUR = 12'hC52, 
         VALUE_BITS = 2,
-        logic DYNAMIC = 1'd0 // 1 = dynamic, 0 = static
-
-
+        logic DYNAMIC = 1'd0 
     )(
         input logic clk,
         input logic rst,
@@ -27,28 +37,23 @@ module draw_string
     logic [7:0] char_line_pixels;
     logic [6:0] text_dynamic [0:WIDTH - 1];
 
-
-
     always_comb begin
 
-        // Dziesiątki i jedności
         text_dynamic[0] = "0" + ((value / 10) % 10);
         text_dynamic[1] = "0" + (value % 10);
-        // Jeśli WIDTH > 2, pozostałe znaki mogą być puste (spacja)
+
         for (int i = 2; i < WIDTH; i++)
             text_dynamic[i] = " ";
     end
 
-    
-
     draw_rect_char
     #( 
-        .WIDTH(WIDTH),         // ilość znaków w poziomie
-        .CHAR_HEIGHT(CHAR_HEIGHT),// wysokość znaku
-        .CHAR_XPOS(CHAR_XPOS), // X pozycja znaku
-        .CHAR_YPOS(CHAR_YPOS), // Y pozycja znaku
-        .COLOUR(COLOUR), // RGB color for the character
-        .SCALE_POWER_OF_2(SIZE) // 2^POWER_OF_2 = 4
+        .WIDTH(WIDTH),         
+        .CHAR_HEIGHT(CHAR_HEIGHT),
+        .CHAR_XPOS(CHAR_XPOS), 
+        .CHAR_YPOS(CHAR_YPOS), 
+        .COLOUR(COLOUR), 
+        .SCALE_POWER_OF_2(SIZE) 
         
     )u_draw_rect_char_start_screen (
         .clk(clk),
@@ -71,7 +76,7 @@ module draw_string
     u_char_rom_start_screen (
         .clk(clk),
         .char_xy(char_xy),
-        .use_dynamic_text(DYNAMIC), // 1 = dynamic, 0 = static
+        .use_dynamic_text(DYNAMIC), 
         .text(text_dynamic),
         .char_code(char_code)
     );
@@ -79,8 +84,7 @@ module draw_string
     font_rom u_font_rom (
         .clk(clk),
         .char_line_pixels(char_line_pixels),
-        .addr({char_code, char_line}) // char_code[6:0] + char_line[3:0]
+        .addr({char_code, char_line})
     );
-
 
 endmodule

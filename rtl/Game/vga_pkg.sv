@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to define parameters for VGA display and main elements of the game
+ * 
+ **/
+
 package vga_pkg;
 
 // Parameters for VGA Display 1024 x 768 @ 60fps using a 65 MHz clock;

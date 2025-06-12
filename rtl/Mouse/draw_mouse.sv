@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ *
+ * Description: module to draw the mouse cursor on the screen
+ * 
+ **/
+
+
 module draw_mouse (
         input  logic clk65MHz,
         input  logic rst,
@@ -14,16 +24,15 @@ module draw_mouse (
     timeunit 1ns;
     timeprecision 1ps;
 
-    logic cursor_visible = 1'b1; // domyślnie kursor widoczny
+    logic cursor_visible = 1'b1; 
 
-      // Logika wyłączania kursora po pierwszym kliknięciu
     always_ff @(posedge clk65MHz) begin
         if (rst)
-            cursor_visible <= 1'b1; // reset: kursor widoczny
+            cursor_visible <= 1'b1; 
         else if (endgame)
             cursor_visible <= 1'b1;
         else if (left_mouse)
-            cursor_visible <= 1'b0; // po kliknięciu: kursor znika na zawsze
+            cursor_visible <= 1'b0; 
     end
 
     assign show_cursor = cursor_visible;

@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: Module to determine the winner and loser based on game results
+ * 
+ **/
+
 module result (
     input  logic clk,
     input  logic rst,
@@ -16,7 +26,6 @@ module result (
             winner <= 1'b0;
             loser  <= 1'b0;
         end else begin
-            // Domyślnie remis
             winner <= 1'b0;
             loser  <= 1'b0;
 
@@ -27,7 +36,6 @@ module result (
                 winner <= 1'b0;
                 loser  <= 1'b1;
             end else begin
-                // Remis punktowy, decyduje czas
                 if (minutes < opp_minutes) begin
                     winner <= 1'b1;
                     loser  <= 1'b0;
@@ -35,7 +43,6 @@ module result (
                     winner <= 1'b0;
                     loser  <= 1'b1;
                 end else begin
-                    // Remis minutowy, decydują sekundy
                     if (seconds < opp_seconds) begin
                         winner <= 1'b1;
                         loser  <= 1'b0;
@@ -43,7 +50,6 @@ module result (
                         winner <= 1'b0;
                         loser  <= 1'b1;
                     end else begin
-                        // Całkowity remis
                         winner <= 1'b0;
                         loser  <= 1'b0;
                     end

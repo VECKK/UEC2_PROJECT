@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module used for logic behind bullet firing, movement,
+ * controlling bullet visibility and position.
+ * 
+ **/
+
 module shoot 
     #(parameter
         SPEED = 2
@@ -29,8 +40,7 @@ module shoot
     logic [11:0] xpos_nxt, ypos_nxt, xpos_fixed;
     logic [16:0] bullet_tick_nxt;
 
-    // Add this counter for bullet update timing
-    logic [16:0] bullet_tick; // Enough bits for 0..84635
+    logic [16:0] bullet_tick;
     logic update_bullet,fire_prev;
 
     assign update_bullet = (bullet_tick == 0);
@@ -63,7 +73,6 @@ module shoot
             state    <= next_state;
             bullet_x <= xpos_nxt;
             fire_prev <= fire;
-            // Only update bullet_y when update_bullet is high or not in UP state
             if (update_bullet || state != UP)
                 bullet_y <= ypos_nxt;
             xpos_fixed <= (state == IDLE && fire && active_shoot) ? xpos : xpos_fixed;
@@ -73,22 +82,19 @@ module shoot
             end else if (state == IDLE && fire && fire_prev == 0 && active_shoot && (ypos >= 36)) begin
                 visible <= 1'b1; 
             end else if (state == UP && bullet_y <= SPEED) begin
-                visible <= 1'b0; // pocisk znika po wylocie poza ekran
+                visible <= 1'b0; 
             end
         end
     end
 
-    // Stan maszyny
     always_comb begin
         case (state)
-            // Only allow shooting if 'armed' is already set (i.e., after first click)
             IDLE:    next_state = (fire == 1 && fire_prev == 0 && active_shoot && (ypos >= 36)) ? UP : IDLE;
             UP:      next_state = (bullet_y <= SPEED) ? IDLE : UP;
             default: next_state = IDLE;
         endcase
     end
 
-    // Pozycje pocisku
     always_comb begin
         case (state)
             IDLE: begin

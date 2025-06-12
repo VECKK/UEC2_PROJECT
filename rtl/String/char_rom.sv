@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to implement a character ROM for displaying text on the screen
+ * 
+ **/
+
 module char_rom 
     #(parameter string TEXT = 
     {
@@ -8,9 +18,9 @@ module char_rom
     (
         input  logic       clk,
         input  logic [7:0] char_xy,
-        input  logic       use_dynamic_text, // 1 = dynamiczny, 0 = stały
+        input  logic       use_dynamic_text, 
         input  logic [6:0] text [0:TEXT_SIZE - 1],
-        output logic [6:0] char_code    // 7-bit ASCII output
+        output logic [6:0] char_code   
     );
 
     logic [6:0] char_code_nxt;

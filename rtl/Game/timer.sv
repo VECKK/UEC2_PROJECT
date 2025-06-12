@@ -1,5 +1,15 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: Module to implement a timer that counts seconds and minutes
+ * 
+ **/
+
 module timer #(
-    parameter CLK_FREQ = 65_000_000 // częstotliwość zegara (65 MHz)
+    parameter CLK_FREQ = 65_000_000 
 )(
     input  logic clk,
     input  logic rst,

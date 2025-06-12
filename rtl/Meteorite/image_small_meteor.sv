@@ -1,3 +1,16 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Robert Szczygiel
+ * Co-Author: Piotr Kaczmarczyk,
+ *            Witkoria Borycka,
+ *            Kacper Kierzek
+ *
+ * Description: image module for small meteorite used as an enemy sprite
+ * 
+ * 
+ **/
+
 module image_small_meteor (
         input  logic clk ,
         input  logic [9:0] address,

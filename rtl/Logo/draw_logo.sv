@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Kacper Kierzek
+ * Co-Author: Wiktoria Borycka
+ *
+ * Description: module to draw the logo on the starting screen of the game
+ * 
+ **/
+
+
 module draw_logo (
     input  logic clk65MHz,
     input  logic rst,
@@ -99,11 +110,9 @@ module draw_logo (
             two_hcount >= logo_x && two_hcount < logo_x + LOGO_W &&
             two_vcount >= logo_y && two_vcount < logo_y + LOGO_H && !two_hblnk && !two_vblnk) begin
 
-            // Compute scaled coordinates
             automatic int img_x = ((two_hcount - logo_x) >> 1);
             automatic int img_y = ((two_vcount - logo_y) >> 1);
 
-            // Compute ROM address (row-major order)
             logo_addr = img_y * IMG_WIDTH + img_x;
 
             if (rgb_logo == 12'hE3F) begin

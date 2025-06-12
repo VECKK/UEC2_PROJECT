@@ -1,3 +1,16 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Robert Szczygiel
+ * Co-Author: Piotr Kaczmarczyk,
+ *            Witkoria Borycka,
+ *            Kacper Kierzek
+ *
+ * Description: image module for game logo
+ * 
+ * 
+ **/
+
 module image_logo (
     input  logic clk ,
     input  logic [11:0] address,

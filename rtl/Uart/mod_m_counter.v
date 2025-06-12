@@ -1,4 +1,9 @@
-// Listing 4.11
+/**
+ * 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * 
+ **/
+ 
 module mod_m_counter
    #(
     parameter N=4, // number of bits in counter

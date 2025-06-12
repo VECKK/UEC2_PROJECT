@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module to control UART communication for seconds
+ * 
+ **/
+
 module uart_seconds (
         input  logic clk,
         input  logic rst,

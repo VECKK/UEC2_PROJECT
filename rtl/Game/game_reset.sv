@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: Not used for now, made for future use in game reset logic
+ * 
+ **/
+
 module game_reset (
     input  logic clk,
     input  logic rst,

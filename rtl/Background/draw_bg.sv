@@ -1,3 +1,14 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: module used for drawing rectangle 
+ * for background image
+ * 
+ **/
+
 module draw_bg (
     input  logic clk65MHz,
     input  logic rst,
@@ -24,9 +35,6 @@ module draw_bg (
     logic [10:0] two_hcount;
     logic        two_vsync, two_vblnk, two_hsync, two_hblnk;
 
-    /**
-     * Stage 1 - pipeline
-     */
     always_ff @(posedge clk65MHz) begin
         if (rst) begin
             one_vcount <= '0;
@@ -45,9 +53,6 @@ module draw_bg (
         end
     end
 
-    /**
-     * Stage 2 - pipeline
-     */
     always_ff @(posedge clk65MHz) begin
         if (rst) begin
             two_vcount <= '0;
@@ -86,9 +91,6 @@ module draw_bg (
         end
     end
 
-    /**
-     * Logic: select background color from ROM
-     */
     always_comb begin
         if (two_vblnk || two_hblnk)
             rgb_nxt = 12'h000;
@@ -96,9 +98,6 @@ module draw_bg (
             rgb_nxt = rom_rgb;
     end
 
-    /**
-     * Compute ROM address (row-major order)
-     */
     always_comb begin
         if (two_hcount < HOR_PIXELS && two_vcount < VER_PIXELS && !two_hblnk && !two_vblnk) begin
 

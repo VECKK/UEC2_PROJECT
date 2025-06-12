@@ -1,3 +1,15 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Robert Szczygiel
+ * Co-Author: Piotr Kaczmarczyk,
+ *            Witkoria Borycka,
+ *            Kacper Kierzek
+ *
+ * Description: image module for background used in the game
+ * 
+ **/
+ 
 module image_bg (
         input  logic clk ,
         input  logic [13:0] address,

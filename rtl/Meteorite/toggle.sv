@@ -1,5 +1,15 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ *
+ * Description: module to toggle a signal at a specific frequency
+ * 
+ **/
+
+
 module toggle #(
-    parameter TOGGLE_MAX = 32_500_000 - 1 //0.5s
+    parameter TOGGLE_MAX = 32_500_000 - 1 
     )(
     input  logic clk,
     input  logic rst,

@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ *
+ * Description: Module to generate random numbers for meteorite positions
+ * 
+ **/
+
+
 module random
     #(parameter
         WIDTH = 10,

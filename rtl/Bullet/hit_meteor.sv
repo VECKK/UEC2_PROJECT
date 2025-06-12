@@ -1,3 +1,12 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ *
+ * Description: module used for logic behind bullet and meteor collision
+ * 
+ **/
+
 module hit_meteor
     #(parameter
         METEOR_W = 150,

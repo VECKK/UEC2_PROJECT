@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025  AGH University of Science and Technology
+ * MTM UEC2
+ * Author: Wiktoria Borycka
+ * Co-Author: Kacper Kierzek
+ *
+ * Description: interface for VGA signals used in the game
+ * 
+ **/
+
 interface vga_if();
 
     logic [10:0] vcount;
