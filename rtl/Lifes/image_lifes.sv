@@ -9,7 +9,7 @@ module image_lifes (
  * Local variables and signals
  */
 
-reg [11:0] life_rom [0:1599]; // 40 * 40 = 1600
+ (* ram_style = "distributed" *) logic [11:0] life_rom [0:1599]; // 40 * 40 = 1600
 
 
 

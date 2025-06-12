@@ -2,10 +2,12 @@ module uart_ctl (
         input  logic clk,
         input  logic rst,
         input  logic first_click,
+        input  logic right_click,
         input  logic endgame,
         input  logic rx,
         output logic tx,
         output logic opp_first_click,
+        output logic opp_right_click,
         output logic opp_endgame 
     );
 
@@ -14,7 +16,7 @@ module uart_ctl (
 
     logic tx_uart, rd_uart, rx_empty, wr_uart, wr_uart_nxt, tx_full;
     logic [7:0] r_data, w_data, w_data_nxt;
-    logic opp_first_click_nxt, opp_endgame_nxt;
+    logic opp_first_click_nxt, opp_endgame_nxt, opp_right_click_nxt;
 
     assign rd_uart = !rx_empty;
 
@@ -30,9 +32,11 @@ module uart_ctl (
         if(rst) begin
             opp_first_click <= 0;
             opp_endgame <= 0;
+            opp_right_click <= 0;
         end else begin
             opp_first_click <= opp_first_click_nxt;
             opp_endgame <= opp_endgame_nxt;
+            opp_right_click <= opp_right_click_nxt;
         end
     end
 
@@ -40,9 +44,11 @@ module uart_ctl (
         if (!rx_empty) begin
             opp_first_click_nxt = r_data[0];
             opp_endgame_nxt = r_data[1];
+            opp_right_click_nxt = r_data[2];
         end else begin
             opp_first_click_nxt = opp_first_click;
             opp_endgame_nxt = opp_endgame;
+            opp_right_click_nxt = opp_right_click;
         end
     end
 
@@ -59,7 +65,7 @@ module uart_ctl (
     always_comb begin
         if (!tx_full) begin
             wr_uart_nxt = 1'b1;
-            w_data_nxt  = {6'b0, endgame, first_click};
+            w_data_nxt  = {5'b0, right_click, endgame, first_click};
         end else begin
             wr_uart_nxt = 1'b0;
             w_data_nxt  = 8'h00;

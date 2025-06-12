@@ -4,7 +4,7 @@ module image_medium_meteor (
         output logic [11:0] rgb
     );
 
-    reg [11:0] rom [0:4095]; // 64 * 64 = 4096
+    (* ram_style = "distributed" *) logic [11:0] rom [0:4095]; // 64 * 64 = 4096
 
     /* Relative path from the simulation or synthesis working directory */
     initial $readmemh("../../rtl/Meteorite/medium_meteor.data", rom);

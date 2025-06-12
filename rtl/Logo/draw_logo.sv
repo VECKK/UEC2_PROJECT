@@ -29,7 +29,7 @@ module draw_logo (
     localparam logo_x = 12'd448; 
     localparam logo_y = 12'd75;
     localparam IMG_WIDTH = 64;
-    localparam IMG_HEIGHT = 64; 
+
 
     always_ff @(posedge clk65MHz) begin : one_ff_blk
         if (rst) begin

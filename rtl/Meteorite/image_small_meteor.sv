@@ -4,7 +4,7 @@ module image_small_meteor (
         output logic [11:0] rgb
     );
 
-    reg [11:0] rom [0:1023]; // 32 * 32 = 1024
+    (* ram_style = "distributed" *) logic [11:0] rom [0:1023]; // 32 * 32 = 1024
 
     /* Relative path from the simulation or synthesis working directory */
     initial $readmemh("../../rtl/Meteorite/small_meteor.data", rom);

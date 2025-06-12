@@ -65,6 +65,7 @@ set sv_files {
     ../rtl/String/draw_string.sv
     ../rtl/String/font_rom.sv
     ../rtl/Mouse/draw_mouse.sv
+    ../rtl/Mouse/buttons_ctl.sv
     ../rtl/Uart/fifo.v
     ../rtl/Uart/mod_m_counter.v
     ../rtl/Uart/uart_ctl.sv
