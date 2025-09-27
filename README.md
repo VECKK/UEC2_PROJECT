@@ -1,6 +1,6 @@
 # Repozytorium GIT na potrzeby Projektu UEC2
 
-Repozytorium do tworzenia projektu gry na przedmiot Układy Elektroniki cyfrowej 2.
+Repozytorium do tworzenia projektu gry "Metoer Split" na przedmiot Układy Elektroniki cyfrowej 2.
 
 AGH, EAIiIB, MTM
 
